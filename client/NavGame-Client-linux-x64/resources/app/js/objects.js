@@ -76,11 +76,11 @@ class UnitType {
 	}
 }
 exports.unit_types = [
-	new UnitType("Queen",   0, 500, 0,  0, 0, 36, 2, 0, 1, 3),
-	new UnitType("Ant",    50,  50, 1,  5, 0, 24, 2, 2, 2, 2),
-	new UnitType("Beetle", 50,  50, 6,  5, 0, 24, 2, 0, 2, 2),
-	new UnitType("Spider", 70,  40, 3, 16, 9, 26, 2, 0, 2, 2),
-	new UnitType("Bee",    80, 150, 1,  5, 0, 36, 2, 0, 1, 1)
+	new UnitType("Queen",    0, 500, 0,  0, 0, 36, 2, 0, 1, 3),
+	new UnitType("Ant",    100,  25, 1,  5, 0, 24, 2, 2, 2, 2),
+	new UnitType("Beetle", 100,  30, 6,  5, 0, 24, 2, 0, 2, 2),
+	new UnitType("Spider", 140,  25, 3, 16, 9, 26, 2, 0, 2, 2),
+	new UnitType("Bee",    150, 100, 1,  5, 0, 36, 2, 0, 1, 1)
 ];
 
 exports.Turn = class {

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" style="background: #CFCF8F">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>NavGame</title>
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="css/custom.css" rel="stylesheet">
+</head>
+
+<body id="body" style="position:absolute;top:5px;left:5px;right:5px;bottom:5px;background:#CFCF8F;">
+	<div id="menu" style="height:100%; width:30%; float: left;">
+		<h3>NavGame</h3>
+		<button class='btn btn-primary btn-sm' id='change-menu' style="display: none;">Show game info</button>
+		<br>
+		<div id="menu-select" style="height:100%">
+			<div id='game-list' class='list-group div-with-scroll' style='height:60%'>
+			</div>
+			<div class='btn-toolbar'>
+				<div class='btn-group'>
+					<button type='button' class='btn btn-default btn-sm' onclick='document.getElementById("games-default-dir").click();'>
+						Change dir
+					</button>
+					<input type="file" id="games-default-dir" webkitdirectory directory style="display: none"/>
+				</div>
+				<div class='btn-group'>
+					<button class='btn btn-default btn-sm' onclick='document.getElementById("game-input-file").click();'>Browse game</button>
+					<input type="file" id="game-input-file" style="display: none"/>
+				</div>
+			</div>
+		</div>
+		<div id="menu-info" style="height:100%; display:none">
+			<p><b>Win condition: </b><span class="primary-game-info" id="wincondition"></span></p>
+			<div id="info1">
+				<p class="primary-game-info" id="req-user-player">req_user (req_player)</p>
+				<table align="center">
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<tr>
+						<th><img src="resources/food.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/queen1.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/ant1.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/beetle1.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/spider1.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/bee1.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+					</tr>
+					<tr>
+						<td align="center"><span class="secundary-game-info" id="info-resources1">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-queen1">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-ant1">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-beetle1">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-spider1">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-bee1">0</span></td>
+					</tr>
+				</table>
+			</div>
+			<div id="info2">
+				<p class="primary-game-info" id="res-user-player">res_user (res_player)</p>
+				<table>
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<col width="140px" />
+					<tr>
+						<th><img src="resources/food.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/queen2.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/ant2.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/beetle2.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/spider2.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+						<th><img src="resources/units/bee2.png" style="height: 1.8em; width: auto; display: block; margin-left: auto; margin-right: auto;"></th>
+					</tr>
+					<tr>
+						<td align="center"><span class="secundary-game-info" id="info-resources2">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-queen2">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-ant2">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-beetle2">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-spider2">0</span></td>
+						<td align="center"><span class="secundary-game-info" id="info-bee2">0</span></td>
+					</tr>
+				</table>
+			</div>
+			<br>
+			<div id="info_clicked" style="display: none">
+				<table style="width:100%">
+					<tr>
+						<td>
+							<h4><span id="info-clicked-type"></span> - <span id="info-clicked-id"></span></h4>
+						</td>
+						<td align="right">
+							<h4>
+								<span id="info-clicked-cocoonbytecodes-lbl"></span>
+								<span id="info-clicked-cocoonbytecodes"></span>
+							</h4>
+						</td>
+					</tr>
+				</table>
+				<div style='float:left'>
+					<img src="resources/units/queen2.png" id="info-clicked-image" style="height: 5.6em; width: auto; display: block; margin-left: auto; margin-right: auto;">
+				</div>
+				<table id="info-clicked-table">
+					<col width="140px" />
+					<col width="280px" />
+					<col width="140px" />
+					<col width="280px" />
+					<col width="140px" />
+					<col width="280px" />
+					<tr>
+						<td><img src="resources/unit_info/health.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td>
+							<span align="right" class="secundary-game-info" id="info-clicked-curr_health">0</span>
+							<span align="right" class="secundary-game-info">/</span>
+							<span align="right" class="secundary-game-info" id="info-clicked-health">0</span>
+						</td>
+						<td><img src="resources/food.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td><span align="right" class="secundary-game-info" id="info-clicked-cost">0</span></td>
+						<td><img src="resources/unit_info/attack_range.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td><span align="right" class="secundary-game-info" id="info-clicked-attack_range">0</span></td>
+					</tr>
+					<tr>
+						<td><img src="resources/unit_info/movement_delay.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td>
+							<span align="right" class="secundary-game-info" id="info-clicked-curr_movement_delay">0</span>
+							<span align="right" class="secundary-game-info">/</span>
+							<span align="right" class="secundary-game-info" id="info-clicked-movement_delay">0</span>
+						</td>
+						<td><img src="resources/unit_info/attack.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td><span align="right" class="secundary-game-info" id="info-clicked-attack">0</span></td>
+						<td><img src="resources/unit_info/sight_range.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td><span align="right" class="secundary-game-info" id="info-clicked-sight_range">0</span></td>
+					</tr>
+					<tr>
+						<td><img src="resources/unit_info/attack_delay.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td>
+							<span align="right" class="secundary-game-info" id="info-clicked-curr_attack_delay">0</span>
+							<span align="right" class="secundary-game-info">/</span>
+							<span align="right" class="secundary-game-info" id="info-clicked-attack_delay">0</span>
+						</td>
+						<td><img src="resources/unit_info/movement.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td><span align="right" class="secundary-game-info" id="info-clicked-movement">0</span></td>
+						<td><img src="resources/unit_info/mining_range.png" align="left" style="height: 1.8em; width: auto;"></td>
+						<td><span align="right" class="secundary-game-info" id="info-clicked-mining_range">0</span></td>
+					</tr>
+				</table>
+				<br>
+				<textarea class="log" id="info-clicked-log"></textarea>
+			</div>
+			</div>
+		</div>
+	</div>
+	<div id="content" style="height:100%; width:70%; float: right;">
+		<!-- Message -->
+		<div id="game-message" style="display: inline; text-align: center;">
+			<h3>No game selected</h3>
+		</div>
+		<!-- Board -->
+		<div id="game-board" style="visibility: hidden; margin:0 auto;" align="center">
+			<canvas id="game-canvas" class="img-responsive"></canvas>
+			<img src="" id="image_to_display" class="img-responsive" alt=""/>
+		</div>
+		<!-- Replay buttons and game number -->
+		<div id="game-buttons" style="visibility: hidden; margin:0 auto;">
+			<button id="play_pause" class="btn btn-default">
+				<span id="span_play" class="glyphicon glyphicon-play"></span>
+				<span id="span_pause" class="glyphicon glyphicon-pause" style="display: none"></span>
+			</button>
+			<button id="stop" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span></button>
+			<button id="backward" class="btn btn-default"><span class="glyphicon glyphicon glyphicon-backward"></span></button>
+			<button id="forward" class="btn btn-default"><span class="glyphicon glyphicon glyphicon-forward"></span></button>
+			<button id="step_backward" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
+			<button id="step_forward" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
+			<!-- Turn slider -->
+			<input id="turn-slider" type="range" min="1" max="1" value="1" step="1" oninput="changeTurn(this.value)" style="float: right;"/>
+			<label class="primary-game-info" id="turn-label" style="float: right;">Turn: 1</label>
+		</div>
+	</div>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script type="text/javascript">
+		var remote = require('electron').remote;
+		document.addEventListener('keydown', function (e) {
+			if (e.which === 123) {
+				remote.getCurrentWindow().webContents.openDevTools();
+			} else if (e.which === 116) {
+				location.reload();
+			}
+		});
+	</script>
+	<script src="js/bootstrap.min.js"></script>
+	<script id="index" src="js/index.js"></script>
+	<script id="select_game" src="js/select_game.js"></script>
+	<script id="replay_game" src="js/replay_game.js"></script>
+</body>
+
+</html>

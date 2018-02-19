@@ -283,7 +283,7 @@ paintHealth = function(health, x, y) {
 
 	ctx.beginPath();
 	ctx.moveTo(fromx, fromy);
-	ctx.lineTo(tox, fromy + (toy - fromy) * health);
+	ctx.lineTo(fromx + (tox - fromx) * health, toy);
 
 	ctx.lineWidth = 3;
 	ctx.strokeStyle = 'green';
