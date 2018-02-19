@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="asm-all-5.0.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jars/asm-all-5.0.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/json-20140107.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/navgame.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
