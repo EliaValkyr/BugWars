@@ -1,0 +1,52 @@
+.list-group-heading {
+	padding: 0cm .2cm 0cm .2cm;
+}
+
+.game-arrow {
+	position: relative;
+	padding: 0px;
+}
+
+.game-arrow-left {
+	text-align: right;
+}
+
+.game-arrow-right {
+	text-align: left;
+}
+
+.primary-game-info {
+	position: relative;
+	text-align: center;
+	font-weight: bold;
+}
+
+.secundary-game-info {
+	position: relative;
+	text-align: center;
+	font-weight: normal;
+}
+
+.list-group-item {
+	padding: 5px 5px 5px 5px;
+}
+
+.div-with-scroll {
+	overflow-y:scroll;
+}
+
+.log {
+	background-color: #000;
+	border: 1px solid #000;
+	color: #00ff00;
+	font-family: courier new;
+	min-width: 100%;
+	max-width: 100%;
+	height:200px;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}

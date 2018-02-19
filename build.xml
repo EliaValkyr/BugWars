@@ -1,0 +1,234 @@
+
+<project>
+	
+	<!-- Load properties and input tasks -->
+	<loadproperties srcFile="build.defaults" />
+	
+	<target name="echo_empty_input">
+		<echo message="Invalid empty input" />
+	</target>
+	
+	<scriptdef name="check_input" language="javascript">
+	    <attribute name="prop" />
+	    <attribute name="value" />
+	    <![CDATA[
+			var value = attributes.get("value");
+			if (value.trim().isEmpty()) {
+				project.executeTarget("echo_empty_input");
+			} else {
+				project.setProperty(attributes.get("prop"), value);
+			}
+	    ]]>
+	</scriptdef>
+	
+	<target name="get_user">
+		<local name="input" />
+		<input message="Enter user" addproperty="input" />
+		<check_input prop="user" value="${input}" />
+	</target>
+	
+	<target name="get_player">
+		<local name="input" />
+		<input message="Enter player" addproperty="input" />
+		<check_input prop="player" value="${input}" />
+	</target>
+
+	<target name="get_user1">
+		<local name="input" />
+		<input message="Enter user1" addproperty="input" />
+		<check_input prop="user1" value="${input}" />
+	</target>
+
+	<target name="get_player1">
+		<local name="input" />
+		<input message="Enter player1" addproperty="input" />
+		<check_input prop="player1" value="${input}" />
+	</target>
+
+	<target name="get_user2">
+		<local name="input" />
+		<input message="Enter user2" addproperty="input" />
+		<check_input prop="user2" value="${input}" />
+	</target>
+
+	<target name="get_player2">
+		<local name="input" />
+		<input message="Enter player2" addproperty="input" />
+		<check_input prop="player2" value="${input}" />
+	</target>
+	
+	<target name="get_map">
+		<local name="input" />
+		<input message="Enter map" addproperty="input" />
+		<check_input prop="map" value="${input}" />
+	</target>
+	
+	<scriptdef name="get_property" language="javascript">
+	    <attribute name="prop" />
+	    <![CDATA[
+			var prop = attributes.get("prop");
+			while (!project.getProperty(prop)) {
+				project.executeTarget("get_" + prop);
+			}
+	    ]]> 
+	</scriptdef>
+	
+	<!-- Paths -->
+	<path id="NavGame.classpath">
+		<pathelement location="${basedir}/build/classes" />
+		<pathelement location="${basedir}/jars/navgame.jar" />
+		<pathelement location="${basedir}/jars/instrumenter.jar" />
+		<pathelement location="${basedir}/jars/asm-all-5.0.3.jar" />
+		<pathelement location="${basedir}/jars/json-20140107.jar" />
+	</path>
+	
+	<!-- Utils -->
+	<scriptdef language="javascript" name="lower">
+	    <attribute name="string" />
+	    <attribute name="to" />
+		
+	    project.setProperty( attributes.get( "to" ),
+	                         attributes.get( "string" ).toLowerCase() );
+	</scriptdef>
+	
+	<!-- Compile tasks -->
+	<target name="compile">
+		<!-- Parameters -->
+		<get_property prop="user1" />
+		<get_property prop="player1" />
+		<get_property prop="user2" />
+		<get_property prop="player2" />
+		<lower string="${user1}" to="user1_lower" />
+		<lower string="${user2}" to="user2_lower" />
+		<lower string="${user1}/${player1}" to="folder1" />
+		<lower string="${user2}/${player2}" to="folder2" />
+		
+		<!-- Echo -->
+		<echo message="Compiling ${user1}.${player1} and ${user2}.${player2}" />
+
+		<!-- Clean -->
+		<mkdir  dir="${basedir}/build" />
+		<mkdir  dir="${basedir}/build/classes" />
+		<delete dir="${basedir}/build/classes/${user1_lower}" />
+		<delete dir="${basedir}/build/classes/${user2_lower}" />
+
+		<delete dir="${basedir}/logs" />
+		<mkdir  dir="${basedir}/logs" />
+		<mkdir  dir="${basedir}/logs/compile" />
+		<mkdir  dir="${basedir}/logs/instrument" />
+		<mkdir  dir="${basedir}/logs/run" />
+		
+		<!-- Create directories -->
+		<mkdir  dir="${basedir}/logs/compile/${user1}" />
+		<mkdir  dir="${basedir}/logs/compile/${user2}" />
+		
+		<!-- Compile user 1 -->
+		<record name="${basedir}/logs/compile/${user1}/${player1}" action="start" emacsmode="true" loglevel="warn" />
+		<javac
+			srcdir="${basedir}/src/"
+			destdir="${basedir}/build/classes"
+			includes="navgame/**,${folder1}/**"
+			includeAntRuntime="false">
+			<classpath refid="NavGame.classpath" />
+		</javac>
+		<record name="${basedir}/logs/compile/${user1}/${player1}" action="stop" />
+		
+		<!-- Compile user 2 -->
+		<record name="${basedir}/logs/compile/${user2}/${player2}" action="start" emacsmode="true" loglevel="warn" />
+		<javac
+			srcdir="${basedir}/src/"
+			destdir="${basedir}/build/classes"
+			includes="navgame/**,${folder2}/**"
+			includeAntRuntime="false">
+			<classpath refid="NavGame.classpath" />
+		</javac>
+		<record name="${basedir}/logs/compile/${user2}/${player2}" action="stop" />
+		
+	</target>
+
+	<target name="instrument" depends="compile">
+		<!-- Parameters -->
+		<get_property prop="user1" />
+		<get_property prop="player1" />
+		<get_property prop="user2" />
+		<get_property prop="player2" />
+		<lower string="${user1}/${player1}" to="folder1" />
+		<lower string="${user2}/${player2}" to="folder2" />
+		
+		<!-- Echo -->
+		<echo message="Instrumenting ${user1}.${player1} and ${user2}.${player2}" />
+		
+		<!-- Create directories -->
+		<mkdir  dir="${basedir}/logs/instrument/${user1}" />
+		<mkdir  dir="${basedir}/logs/instrument/${user2}" />
+		
+		<!-- Execute the instrumenter to add bytecodes -->
+		<java classname="instrumenter.Main" failonerror="true" fork="yes">
+			<classpath refid="NavGame.classpath" />
+			<arg value="${basedir}/build/classes/${folder1}" />
+			<arg value="${folder1}" />
+			<arg value="true" />
+		</java>
+		
+		<java classname="instrumenter.Main" failonerror="true" fork="yes">
+			<classpath refid="NavGame.classpath" />
+			<arg value="${basedir}/build/classes/${folder2}" />
+			<arg value="${folder2}" />
+			<arg value="true" />
+		</java>
+	</target>
+	
+	<!-- Run tasks -->
+	<target name="run" depends="instrument">
+		<!-- Parameters -->
+		<get_property prop="user1" />
+		<get_property prop="player1" />
+		<get_property prop="user2" />
+		<get_property prop="player2" />
+		<get_property prop="map" />
+		
+		<!-- Echo -->
+		<echo message="Running ${user1}.${player1} vs ${user2}.${player2}" />
+		
+		<!-- Create directories -->
+		<mkdir  dir="${basedir}/logs/run/${user1}" />
+		<mkdir  dir="${basedir}/logs/run/${user2}" />
+		
+		<java classname="navgame.Main" failonerror="true" fork="yes">
+			<jvmarg value="-noverify" />
+			<classpath refid="NavGame.classpath" />
+			<arg value="${user1}" />
+			<arg value="${player1}" />
+			<arg value="${user2}" />
+			<arg value="${player2}" />
+			<arg value="${map}" />
+		</java>
+	</target>
+	
+	<!-- Package tasks -->
+	<target name="package">
+		<!-- Parameters -->
+		<get_property prop="user" />
+		<get_property prop="player" />
+		
+		<!-- Echo -->
+		<echo message="Packaging source code" />
+		
+		<!-- Clean, compile and run packager -->
+		<delete dir="${basedir}/build/classes/packager" />
+		<javac
+			srcdir="${basedir}/src/"
+			destdir="${basedir}/build/classes"
+			includes="packager/**"
+			includeAntRuntime="false">
+			<classpath refid="NavGame.classpath" />
+		</javac>
+		
+		<java classname="packager.Main" failonerror="true" fork="yes">
+			<classpath refid="NavGame.classpath" />
+			<arg value="${user}" />
+			<arg value="${player}" />
+		</java>
+	</target>
+
+</project>

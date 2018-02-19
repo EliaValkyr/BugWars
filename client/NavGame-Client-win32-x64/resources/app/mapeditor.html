@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" style="background: #CFCF8F">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>NavGame</title>
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="css/custom.css" rel="stylesheet">
+</head>
+
+<body id="body" style="position:absolute;top:5px;left:5px;right:5px;bottom:5px;background:#CFCF8F;">
+	<div id="menu" style="height:100%; width:30%; float: left;">
+		<h3>NavGame</h3>
+		<div>
+			<label for="board-size">Board size (1 < x < 51):</label>
+			<input type="number" id="board-size" style="width:2.0em;"><br>
+			<button class='btn btn-primary' id='symmetry-horitzonal' disabled>Horitzonal</button>
+			<button class='btn btn-primary' id='symmetry-vertical' disabled>Vertical</button>
+			<button class='btn btn-primary' id='symmetry-rotacional' disabled>Rotacional</button>
+		</div>
+		<div id="meta-info" style='display:none;''>
+			<label for="map-name">Map name:</label>
+			<input type="text" id="map-name"><br>
+			<label for="offsetx">Offset X:</label>
+			<input type="number" id="offsetx" style="width:5.0em;" value=0><br>
+			<label for="offsety">Offset Y:</label>
+			<input type="number" id="offsety" style="width:5.0em;" value=0>
+		</div>
+		<div id="palette" style='display:none;'>
+			<table>
+				<tr>
+					<td id="queen1"><img src="resources/units/queen1.png" style="height:3.0em;"></td>
+					<td id="queen2"><img src="resources/units/queen2.png" style="height:3.0em;"></td>
+				</tr>
+				<!--tr>
+					<td id="ant1"><img src="resources/units/ant1.png" style="height:3.0em;"></td>
+					<td id="ant2"><img src="resources/units/ant2.png" style="height:3.0em;"></td>
+				</tr>
+				<tr>
+					<td id="beetle1"><img src="resources/units/beetle1.png" style="height:3.0em;"></td>
+					<td id="beetle2"><img src="resources/units/beetle2.png" style="height:3.0em;"></td>
+				</tr>
+				<tr>
+					<td id="spider1"><img src="resources/units/spider1.png" style="height:3.0em;"></td>
+					<td id="spider2"><img src="resources/units/spider2.png" style="height:3.0em;"></td>
+				</tr>
+				<tr>
+					<td id="bee1"><img src="resources/units/bee1.png" style="height:3.0em;"></td>
+					<td id="bee2"><img src="resources/units/bee2.png" style="height:3.0em;"></td>
+				</tr-->
+				<tr>
+					<td id="wall"><img src="resources/wall.png" style="height:3.0em;"></td>
+				</tr>
+				<tr>
+					<td id="food"><img src="resources/food.png" style="height:3.0em;"></td>
+					<td><input type="number" id="food-quantity" style="width:4.0em;"></td>
+				</tr>
+				<tr>
+					<td id="erase"><img src="resources/erase.png" style="height:3.0em;"></td>
+				</tr>
+			</table>
+		</div>
+		<div id="save_div" style='display:none;'>
+			<button class='btn btn-primary' onclick='document.getElementById("maps-folder").click();'>Save</button>
+			<input type="file" id="maps-folder" webkitdirectory directory style="display: none"/>
+		</div>
+	</div>
+	<div id="content" style="height:100%; width:70%; float: right;">
+		<!-- Board -->
+		<div id="game-board" style="visibility: hidden; margin:0 auto;" align="center">
+			<canvas id="game-canvas" class="img-responsive"></canvas>
+			<img src="" id="image_to_display" class="img-responsive" alt=""/>
+		</div>
+	</div>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script type="text/javascript">
+		var remote = require('electron').remote;
+		document.addEventListener('keydown', function (e) {
+			if (e.which === 123) {
+				remote.getCurrentWindow().webContents.openDevTools();
+			} else if (e.which === 116) {
+				location.reload();
+			}
+		});
+	</script>
+	<script src="js/bootstrap.min.js"></script>
+	<script id="mapeditor" src="js/mapeditor.js"></script>
+</body>
+
+</html>
