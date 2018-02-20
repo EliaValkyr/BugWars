@@ -35,7 +35,7 @@ public class UnitPlayer {
                 }
             }
 
-            uc.yield(); //End of the turn
+            uc.yield(); //End of turn
         }
 
     }

@@ -1,6 +1,6 @@
-package demo.nullplayer;
+package firstbot.firstversion;
 
-import navgame.*;
+import navgame.UnitController;
 
 public class UnitPlayer {
 
