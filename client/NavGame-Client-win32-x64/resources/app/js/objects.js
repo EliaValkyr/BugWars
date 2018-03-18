@@ -7,9 +7,10 @@ exports.Board = class {
 }
 
 exports.Wall = class {
-	constructor(x, y) {
+	constructor(x, y, health) {
 		this.x = x;
 		this.y = y;
+		this.health = health;
 	}
 }
 
@@ -76,15 +77,16 @@ class UnitType {
 	}
 }
 exports.unit_types = [
-	new UnitType("Queen",   0, 500, 0,  0, 0, 36, 2, 0, 1, 3),
-	new UnitType("Ant",    50,  50, 1,  5, 0, 24, 2, 2, 2, 2),
-	new UnitType("Beetle", 50,  50, 6,  5, 0, 24, 2, 0, 2, 2),
-	new UnitType("Spider", 70,  40, 3, 16, 9, 26, 2, 0, 2, 2),
-	new UnitType("Bee",    80, 150, 1,  5, 0, 36, 2, 0, 1, 1)
+	new UnitType("Queen",    0, 250, 0,  0, 0, 36, 2, 0, 1, 3),
+	new UnitType("Ant",    150,  15, 1,  5, 0, 24, 2, 2, 2, 2),
+	new UnitType("Beetle", 200,  45, 4,  5, 0, 24, 2, 0, 2, 2),
+	new UnitType("Spider", 280,  10, 3, 18, 9, 32, 2, 0, 2, 2),
+	new UnitType("Bee",    300, 100, 1,  5, 0, 36, 2, 0, 1, 1)
 ];
 
 exports.Turn = class {
-	constructor(foods, team_turn1, team_turn2) {
+	constructor(walls, foods, team_turn1, team_turn2) {
+		this.walls = walls;
 		this.foods = foods;
 		this.team1 = team_turn1;
 		this.team2 = team_turn2;
