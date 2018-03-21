@@ -1,0 +1,113 @@
+
+<div id="menu-viewer-wincondition">
+	<b>Win condition: </b><span class="primary-game-info" id="wincondition"></span>
+</div>
+<div id="menu-viewer-info1">
+	<p class="primary-game-info" id="menu-viewer-userplayer1">User1 (Player1)</p>
+	<table align="center">
+		<col width="140px" /><col width="140px" /><col width="140px" />
+		<col width="140px" /><col width="140px" /><col width="140px" />
+		<tr>
+			<th><img class="viewer-small-img" id='menu-viewer-info1-food'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info1-queen'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info1-ant'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info1-beetle'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info1-spider'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info1-bee'></th>
+		</tr>
+		<tr>
+			<td align="center"><span class="secundary-game-info" id="info-resources1">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-queen1">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-ant1">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-beetle1">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-spider1">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-bee1">0</span></td>
+		</tr>
+	</table>
+</div>
+<div id="menu-viewer-info2">
+	<p class="primary-game-info" id="menu-viewer-userplayer2">User2 (Player2)</p>
+	<table>
+		<col width="140px" /><col width="140px" /><col width="140px" />
+		<col width="140px" /><col width="140px" /><col width="140px" />
+		<tr>
+			<th><img class="viewer-small-img" id='menu-viewer-info2-food'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info2-queen'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info2-ant'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info2-beetle'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info2-spider'></th>
+			<th><img class="viewer-small-img" id='menu-viewer-info2-bee'></th>
+		</tr>
+		<tr>
+			<td align="center"><span class="secundary-game-info" id="info-resources2">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-queen2">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-ant2">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-beetle2">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-spider2">0</span></td>
+			<td align="center"><span class="secundary-game-info" id="info-bee2">0</span></td>
+		</tr>
+	</table>
+</div>
+<div id="menu-viewer-infoclicked">
+	<div id="menu-viewer-infoclicked-content" style="display: none">
+		<table style="width:100%">
+			<tr>
+				<td>
+					<h4><span id="info-clicked-type"></span> - <span id="info-clicked-id"></span></h4>
+				</td>
+				<td align="right">
+					<h4>
+						<span id="info-clicked-cocoonbytecodes-lbl"></span>
+						<span id="info-clicked-cocoonbytecodes"></span>
+					</h4>
+				</td>
+			</tr>
+		</table>
+		<div style='float:left'>
+			<img class="viewer-big-img" src="resources/units/queen2.png" id="info-clicked-image">
+		</div>
+		<table id="info-clicked-table">
+			<col width="140px" /><col width="280px" /><col width="140px" />
+			<col width="280px" /><col width="140px" /><col width="280px" />
+			<tr>
+				<td><img id='clicked-health-img' align="left" class="viewer-small-img"></td>
+				<td>
+					<span align="right" id="info-clicked-curr_health">0</span>
+					<span align="right">/</span>
+					<span align="right" id="info-clicked-health">0</span>
+				</td>
+				<td><img id="clicked-food-img" align="left" class="viewer-small-img"></td>
+				<td><span align="right" id="info-clicked-cost">0</span></td>
+				<td><img id="clicked-attack_range-img" align="left" class="viewer-small-img"></td>
+				<td><span align="right" id="info-clicked-attack_range">0</span></td>
+			</tr>
+			<tr>
+				<td><img id="clicked-movement_delay-img" align="left" class="viewer-small-img"></td>
+				<td>
+					<span align="right" class="" id="info-clicked-curr_movement_delay">0</span>
+					<span align="right" class="">/</span>
+					<span align="right" class="" id="info-clicked-movement_delay">0</span>
+				</td>
+				<td><img id="clicked-attack-img" align="left" class="viewer-small-img"></td>
+				<td><span align="right" class="" id="info-clicked-attack">0</span></td>
+				<td><img id="clicked-sight_range-img" align="left" class="viewer-small-img"></td>
+				<td><span align="right" class="" id="info-clicked-sight_range">0</span></td>
+			</tr>
+			<tr>
+				<td><img id="clicked-attack_delay-img" align="left" class="viewer-small-img"></td>
+				<td>
+					<span align="right" id="info-clicked-curr_attack_delay">0</span>
+					<span align="right">/</span>
+					<span align="right" id="info-clicked-attack_delay">0</span>
+				</td>
+				<td><img id="clicked-movement-img" align="left" class="viewer-small-img"></td>
+				<td><span align="right" id="info-clicked-movement">0</span></td>
+				<td><img id="clicked-mining_range-img" align="left" class="viewer-small-img"></td>
+				<td><span align="right" id="info-clicked-mining_range">0</span></td>
+			</tr>
+		</table>
+	</div>
+	<div id='menu-viewer-infoclicked-log' style="display: none; width: 100%;">
+		<textarea class="log" id="info-clicked-log" style="height: 100%; width: 100%;" disabled></textarea>
+	</div>
+</div>

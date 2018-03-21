@@ -4,26 +4,10 @@ const {app, BrowserWindow, Menu} = electron
 const path = require('path')
 const url = require('url')
 
-// Template for the Menu
-menuTemplate = [
-  {
-    label: 'Application',
-    submenu: [
-      {
-        label: 'About',
-        click: () => {
-          openAboutWindow()
-        }
-      }
-    ]
-  }
-]
-
 // Keep a global reference so the garbage collector does not destroy our app
 let mainWindow
 
 function createWindow () {
-
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 860,
@@ -38,32 +22,10 @@ function createWindow () {
   }))
 
   // Set up the menu
-  var menu = Menu.buildFromTemplate(menuTemplate)
-  mainWindow.setMenu(menu)
+  mainWindow.setMenu(null)
 
   mainWindow.on('closed', () => {
     mainWindow = null
-  })
-}
-
-// Opens the about window
-function openAboutWindow() {
-
-  let aboutWindow = new BrowserWindow({
-    parent: mainWindow,
-    modal: true,
-    show: false,
-    width: 400,
-    height: 200
-  })
-  aboutWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'about.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-  aboutWindow.setMenu(null)
-  aboutWindow.once('ready-to-show', () => {
-    aboutWindow.show()
   })
 }
 
