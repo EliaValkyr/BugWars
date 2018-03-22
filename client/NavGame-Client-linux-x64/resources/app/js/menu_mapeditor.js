@@ -146,7 +146,8 @@ MenuMapeditor.prototype.checkAndInitializeMap = function(symmetry) {
 	}
 
 	this.initializeMap(board_size, board_size, offsetx, offsety, symmetry);
-	controller.contents['mapeditor'].initializeMap(nr, nc, offsetx, offsety, symmetry);
+	controller.contents['mapeditor'].initializeMap(
+		board_size, board_size, offsetx, offsety, symmetry);
 }
 
 MenuMapeditor.prototype.removeAllSelections = function() {
@@ -208,7 +209,7 @@ MenuMapeditor.prototype.saveWrapper = function() {
 			$('#mapeditor-save-status').css('color', 'red');
 			return;
 		}
-		
+
 		var file = self.maps_dir + '/' + map_name + '.txt';
 		controller.saveMap(file);
 	}
