@@ -1,5 +1,3 @@
-user1=demo
-player1=emptyplayer
-user2=demo
-player2=emptyplayer
+package1=demo1
+package2=demo2
 map=Basic1
