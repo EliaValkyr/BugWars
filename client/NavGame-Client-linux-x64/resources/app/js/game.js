@@ -26,7 +26,7 @@ Game.prototype.render = function() {
 	$('#content-controls-slider-input').on( "input", function() {self.changeTurn($(this).val());} );
 	$('#content-controls-slider-input').attr("min", 1);
 	$('#content-controls-slider-input').attr("max", this.rounds.length);
-	
+
 	this.ctx = $('#content-board-canvas')[0].getContext('2d');
 
 	this.painter = new Painter(this.ctx, this.board.nr, this.board.nc, 'content-board');
@@ -35,7 +35,7 @@ Game.prototype.render = function() {
 	this.canvas_height = $('#content-board').innerHeight();
 	$('#content-board-canvas').attr('width', this.canvas_width);
 	$('#content-board-canvas').attr('height', this.canvas_height);
-	
+
 	this.paintRound();
 }
 
@@ -70,12 +70,12 @@ Game.prototype.loadGame = function(game_file) {
 Game.prototype.setGameMetainfo = function() {
 	$('#menu-viewer-userplayer1').html(
 		'<font color=' + this.team1.color + '>' +
-		this.team1.user + " (" + this.team1.player + ")" +
+		this.team1.package +
 		'</font>'
 	);
 	$('#menu-viewer-userplayer2').html(
 		'<font color=' + this.team2.color + '>' +
-		this.team2.user + " (" + this.team2.player + ")" +
+		this.team2.package + ")" +
 		'</font>'
 	);
 	if (this.winner == this.team1) {
@@ -226,12 +226,12 @@ Game.prototype.paintRound = function() {
 	$('#menu-viewer-infoclicked-log').css('display', 'none');
 	this.cw = this.canvas_width / this.board.nc;
 	this.ch = this.canvas_height / this.board.nr;
-	
+
 	this.painter.paintBackground();
 	this.painter.paintGrid();
 
 	if (this.rounds == null) return;
-	
+
 	var round = this.rounds[this.curr_round];
 	// Obstacles
 	for (var i = 0; i < round.walls.length; i++) {
@@ -257,7 +257,7 @@ Game.prototype.paintRound = function() {
 	for (var i = 0; i < round.team2.actions.length; i++) {
 		this.painter.paintAction(round.team2.actions[i], this.team2.color);
 	}
-	
+
 	// Selected unit
 	if (this.selectedUnitId != null) {
 		for (var i = 0; i < round.team1.units.length; i++) {
@@ -281,14 +281,14 @@ Game.prototype.paintRound = function() {
 		$('#menu-viewer-infoclicked-content').css('display', 'inline-block');
 		$('#menu-viewer-infoclicked-log').css('display', 'inline-block');
 	}
-	
+
 	// Selected food
 	if (this.selectedFood != null) {
 		this.setClickedFoodInfo(this.selectedFood.x, this.selectedFood.y);
 		$('#menu-viewer-infoclicked-content').css('display', 'inline-block');
 		$('#menu-viewer-infoclicked-log').css('display', 'inline-block');
 	}
-	
+
 	// Selected wall
 	if (this.selectedWall != null) {
 		this.setClickedWallInfo(this.selectedWall.x, this.selectedWall.y);
@@ -308,12 +308,12 @@ Game.prototype.parseGame = function(game_str) {
 	// By lines
 	var lines = game_str.split('\n');
 	var line = 0;
-	// User and player 1
-	var tokens = lines[line++].split(' ');
-	this.team1 = new Team("blue", tokens[0], tokens[1]);
-	// User and player 2
-	var tokens = lines[line++].split(' ');
-	this.team2 = new Team("red", tokens[0], tokens[1]);
+	// Package 1
+	var token = lines[line++];
+	this.team1 = new Team("blue", tokens);
+	// Package 2
+	var token = lines[line++];
+	this.team2 = new Team("red", tokens);
 	// Board size
 	var tokens = lines[line++].split(' ');
 	this.board = new Board(parseInt(tokens[0]), parseInt(tokens[1]));
@@ -524,7 +524,7 @@ Game.prototype.handleMouseDown = function(e) {
 	// get the mouse position
 	var mouseX = parseInt(e.clientX - $("#content-board-canvas").offset().left);
 	var mouseY = parseInt(e.clientY - $("#content-board-canvas").offset().top);
-	
+
 	this.selectedUnitId = null;
 	this.selectedFood = null;
 	this.selectedWall = null;

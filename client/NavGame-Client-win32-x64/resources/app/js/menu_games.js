@@ -66,8 +66,8 @@ MenuGames.prototype.loadGameList = function() {
 				if (self.isValidGamePath(file)) {
 					var name = file.replace(/\.[^.]+$/, "");
 					var datetime_str = name.replace(/(?:\-[a-zA-Z0-9_]+){2}$/, "");
-					var player1 = name.replace(/^[0-9]{8}\-[0-9]{6}\-/, "").replace(/(?:\-[a-zA-Z0-9_]+){2}$/, "");
-					var player2 = name.replace(/^[0-9]{8}\-[0-9]{6}(?:\-[a-zA-Z0-9_]+){2}\-/, "");
+					var player1 = name.replace(/^[0-9]{8}\-[0-9]{6}\-/, "").replace(/(?:\-[a-zA-Z0-9_]+){1}$/, "");
+					var player2 = name.replace(/^[0-9]{8}\-[0-9]{6}(?:\-[a-zA-Z0-9_]+){1}\-/, "");
 
 					var year = datetime_str.substring(0, 4);
 					var month = datetime_str.substring(4, 6);
