@@ -51,7 +51,7 @@ MenuGames.prototype.render = function() {
 }
 
 MenuGames.prototype.isValidGamePath = function(gameFile) {
-	var gameFileRegex = /^[0-9]{8}\-[0-9]{6}(?:\-[a-zA-Z0-9_]+){4}$/;
+	var gameFileRegex = /^[0-9]{8}\-[0-9]{6}(?:\-[a-zA-Z0-9_]+){2}$/;
 	return gameFileRegex.test(gameFile)
 }
 
