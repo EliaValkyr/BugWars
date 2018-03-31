@@ -2,7 +2,8 @@ var fs = require('fs');
 
 MenuGames = function() {
 	this.games_dir = null;
-	this.default_games_dir_file = "default_games_dir.txt";
+	this.default_games_dir_file = "defaults/games_dir.txt";
+  if (!fs.existsSync('defaults')) fs.mkdirSync('defaults');
 	this.active_game = null;
 }
 
@@ -52,7 +53,7 @@ MenuGames.prototype.render = function() {
 
 MenuGames.prototype.isValidGamePath = function(gameFile) {
 	var gameFileRegex = /^[0-9]{8}\-[0-9]{6}(?:\-[a-zA-Z0-9_]+){2}$/;
-	return gameFileRegex.test(gameFile)
+	return gameFileRegex.test(gameFile);
 }
 
 MenuGames.prototype.loadGameList = function() {

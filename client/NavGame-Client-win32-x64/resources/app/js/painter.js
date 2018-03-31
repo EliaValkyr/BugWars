@@ -18,7 +18,7 @@ Painter.prototype.updateVariables = function() {
 Painter.prototype.paintBackground = function() {
 	this.updateVariables();
 	/*this.ctx.drawImage(
-		img_ground, 0, 0,
+		images.ground, 0, 0,
 		$('#content-board-canvas').innerWidth(),
 		$('#content-board-canvas').innerHeight()
 	);*/
@@ -116,19 +116,19 @@ Painter.prototype.paintUnit = function(unit, team) {
 	this.updateVariables();
 	var img = null;
 	if (team == 1) {
-		if (unit.type.name == "Queen") img = img_queen1;
-		else if (unit.type.name == "Ant") img = img_ant1;
-		else if (unit.type.name == "Beetle") img = img_beetle1;
-		else if (unit.type.name == "Spider") img = img_spider1;
-		else if (unit.type.name == "Bee") img = img_bee1;
+		if (unit.type.name == "Queen") img = images.queen1;
+		else if (unit.type.name == "Ant") img = images.ant1;
+		else if (unit.type.name == "Beetle") img = images.beetle1;
+		else if (unit.type.name == "Spider") img = images.spider1;
+		else if (unit.type.name == "Bee") img = images.bee1;
 	} else if (team == 2) {
-		if (unit.type.name == "Queen") img = img_queen2;
-		else if (unit.type.name == "Ant") img = img_ant2;
-		else if (unit.type.name == "Beetle") img = img_beetle2;
-		else if (unit.type.name == "Spider") img = img_spider2;
-		else if (unit.type.name == "Bee") img = img_bee2;
+		if (unit.type.name == "Queen") img = images.queen2;
+		else if (unit.type.name == "Ant") img = images.ant2;
+		else if (unit.type.name == "Beetle") img = images.beetle2;
+		else if (unit.type.name == "Spider") img = images.spider2;
+		else if (unit.type.name == "Bee") img = images.bee2;
 	}
-	
+
 	this.paintMovement(unit.prevx, unit.prevy, unit.x, unit.y);
 	this.ctx.drawImage(img, unit.x * this.cw, (this.nr - 1 - unit.y) * this.ch, this.cw, this.ch);
 	if (unit.cocoon > 0) {
@@ -166,7 +166,7 @@ Painter.prototype.paintRange = function(x, y, range, min_range, color) {
 	if (range == 0) return;
 	this.ctx.globalAlpha = 0.2;
 	this.ctx.fillStyle = color;
-	for (i = x - range; i <= x + range; i++) { 
+	for (i = x - range; i <= x + range; i++) {
 		for (j = y - range; j <= y + range; j++) {
 			var square_dist = Math.pow((x - i), 2) + Math.pow((y - j), 2);
 			if (square_dist >= min_range) {

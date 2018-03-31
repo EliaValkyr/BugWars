@@ -23,10 +23,9 @@ exports.Food = class {
 }
 
 exports.Team = class {
-	constructor(color, user, player) {
+	constructor(color, packageName) {
 		this.color = color;
-		this.user = user;
-		this.player = player;
+		this.packageName = packageName;
 		this.resources = 0;
 		this.units = [];
 		this.actions = [];

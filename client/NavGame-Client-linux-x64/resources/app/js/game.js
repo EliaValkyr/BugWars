@@ -70,12 +70,12 @@ Game.prototype.loadGame = function(game_file) {
 Game.prototype.setGameMetainfo = function() {
 	$('#menu-viewer-userplayer1').html(
 		'<font color=' + this.team1.color + '>' +
-		this.team1.package +
+		this.team1.packageName +
 		'</font>'
 	);
 	$('#menu-viewer-userplayer2').html(
 		'<font color=' + this.team2.color + '>' +
-		this.team2.package + ")" +
+		this.team2.packageName +
 		'</font>'
 	);
 	if (this.winner == this.team1) {
@@ -128,17 +128,17 @@ Game.prototype.setGameInfo = function() {
 Game.prototype.setClickedUnitInfo = function(unit, team) {
 	var img = null;
 	if (team == this.team1) {
-		if (unit.type.name == "Queen") img = img_queen1;
-		else if (unit.type.name == "Ant") img = img_ant1;
-		else if (unit.type.name == "Beetle") img = img_beetle1;
-		else if (unit.type.name == "Spider") img = img_spider1;
-		else if (unit.type.name == "Bee") img = img_bee1;
+		if (unit.type.name == "Queen") img = images.queen1;
+		else if (unit.type.name == "Ant") img = images.ant1;
+		else if (unit.type.name == "Beetle") img = images.beetle1;
+		else if (unit.type.name == "Spider") img = images.spider1;
+		else if (unit.type.name == "Bee") img = images.bee1;
 	} else if (team == this.team2) {
-		if (unit.type.name == "Queen") img = img_queen2;
-		else if (unit.type.name == "Ant") img = img_ant2;
-		else if (unit.type.name == "Beetle") img = img_beetle2;
-		else if (unit.type.name == "Spider") img = img_spider2;
-		else if (unit.type.name == "Bee") img = img_bee2;
+		if (unit.type.name == "Queen") img = images.queen2;
+		else if (unit.type.name == "Ant") img = images.ant2;
+		else if (unit.type.name == "Beetle") img = images.beetle2;
+		else if (unit.type.name == "Spider") img = images.spider2;
+		else if (unit.type.name == "Bee") img = images.bee2;
 	}
 	$("#info-clicked-image").attr("src", img.src);
 	$('#info-clicked-type').html(unit.type.name);
@@ -191,7 +191,7 @@ Game.prototype.setClickedFoodInfo = function(x, y) {
 		}
 	}
 	if (quantity == null) return;
-	$("#info-clicked-image").attr("src", img_food.src);
+	$("#info-clicked-image").attr("src", images.food.src);
 	$('#info-clicked-type').html('Food');
 	$('#info-clicked-id').html(quantity);
 
@@ -210,7 +210,7 @@ Game.prototype.setClickedWallInfo = function(x, y) {
 		}
 	}
 	if (health == null) return;
-	$("#info-clicked-image").attr("src", img_wall.src);
+	$("#info-clicked-image").attr("src", images.wall.src);
 	$('#info-clicked-type').html('Rock');
 	$('#info-clicked-id').html(health);
 
@@ -235,11 +235,11 @@ Game.prototype.paintRound = function() {
 	var round = this.rounds[this.curr_round];
 	// Obstacles
 	for (var i = 0; i < round.walls.length; i++) {
-		this.painter.paintElement(img_wall, round.walls[i].x, round.walls[i].y);
+		this.painter.paintElement(images.wall, round.walls[i].x, round.walls[i].y);
 	}
 	// Food
 	for (var i = 0; i < round.foods.length; i++) {
-		this.painter.paintElement(img_food, round.foods[i].x, round.foods[i].y);
+		this.painter.paintElement(images.food, round.foods[i].x, round.foods[i].y);
 	}
 	// Units player 1
 	for (var i = 0; i < round.team1.units.length; i++) {
@@ -308,12 +308,12 @@ Game.prototype.parseGame = function(game_str) {
 	// By lines
 	var lines = game_str.split('\n');
 	var line = 0;
-	// Package 1
+	// User and player 1
 	var token = lines[line++];
-	this.team1 = new Team("blue", tokens);
-	// Package 2
+	this.team1 = new Team("blue", token);
+	// User and player 2
 	var token = lines[line++];
-	this.team2 = new Team("red", tokens);
+	this.team2 = new Team("red", token);
 	// Board size
 	var tokens = lines[line++].split(' ');
 	this.board = new Board(parseInt(tokens[0]), parseInt(tokens[1]));

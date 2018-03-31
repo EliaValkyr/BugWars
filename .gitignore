@@ -5,6 +5,5 @@
 logs
 games
 build
-client/*/default_maps_dir.txt
-client/*/default_games_dir.txt
+client/*/defaults
 

@@ -56,6 +56,10 @@ ContentGame.prototype.render = function() {
 	});
 }
 
+ContentGame.prototype.refreshBoard = function() {
+	if (this.game != null) this.game.render();
+}
+
 ContentGame.prototype.loadGame = function(game_file, game_dir = null) {
 	if (this.game != null) this.game.stopReplay();
 	this.game = new Game(game_file, game_dir);

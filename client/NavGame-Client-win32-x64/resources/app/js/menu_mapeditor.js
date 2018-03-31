@@ -2,7 +2,8 @@ var fs = require('fs');
 
 MenuMapeditor = function() {
 	this.maps_dir = null;
-	this.default_maps_dir_file = "default_maps_dir.txt";
+	this.default_maps_dir_file = "defaults/maps_dir.txt";
+  if (!fs.existsSync('defaults')) fs.mkdirSync('defaults');
 	this.active_map = null;
 }
 
@@ -12,23 +13,11 @@ MenuMapeditor.prototype.resizeElements = function() {
 MenuMapeditor.prototype.render = function() {
 	var self = this;
 	$('#menu-content').load('views/menu_mapeditor.html', function(data) {
+		images.updateImages();
+
 		$('#symmetry-horitzonal').click(()=>self.checkAndInitializeMap('horitzonal'));
 		$('#symmetry-vertical').click(()=>self.checkAndInitializeMap('vertical'));
 		$('#symmetry-rotational').click(()=>self.checkAndInitializeMap('rotational'));
-
-		$("#mapeditor-queen1").attr("src", img_queen1.src);
-		$("#mapeditor-ant1").attr("src", img_ant1.src);
-		$("#mapeditor-beetle1").attr("src", img_beetle1.src);
-		$("#mapeditor-spider1").attr("src", img_spider1.src);
-		$("#mapeditor-bee1").attr("src", img_bee1.src);
-		$("#mapeditor-queen2").attr("src", img_queen2.src);
-		$("#mapeditor-ant2").attr("src", img_ant2.src);
-		$("#mapeditor-beetle2").attr("src", img_beetle2.src);
-		$("#mapeditor-spider2").attr("src", img_spider2.src);
-		$("#mapeditor-bee2").attr("src", img_bee2.src);
-		$("#mapeditor-food").attr("src", img_food.src);
-		$("#mapeditor-wall").attr("src", img_wall.src);
-		$("#mapeditor-erase").attr("src", img_erase.src);
 
 		$('#mapeditor-wall-layer').click(()=>self.selectPalette('wall'));
 		$('#mapeditor-food-layer').click(()=>self.selectPalette('food'));
@@ -44,6 +33,7 @@ MenuMapeditor.prototype.render = function() {
 		$('#mapeditor-bee2-layer').click(()=>self.selectPalette('bee2'));
 		$('#mapeditor-erase-layer').click(()=>self.selectPalette('erase'));
 
+		$('#mapeditor-new').click(self.newWrapper());
 		$('#mapeditor-save').click(self.saveWrapper());
 		$('#maps-dir-input').change(self.selectMapsDirWrapper());
 		fs.exists(self.default_maps_dir_file, function(exists) {
@@ -146,8 +136,8 @@ MenuMapeditor.prototype.checkAndInitializeMap = function(symmetry) {
 	}
 
 	this.initializeMap(board_size, board_size, offsetx, offsety, symmetry);
-	controller.contents['mapeditor'].initializeMap(
-		board_size, board_size, offsetx, offsety, symmetry);
+	controller.contents['mapeditor'].initializeMap(board_size, board_size,
+ 																									offsetx, offsety, symmetry);
 }
 
 MenuMapeditor.prototype.removeAllSelections = function() {
@@ -189,9 +179,18 @@ MenuMapeditor.prototype.selectMapsDirWrapper = function() {
 	return func;
 }
 
+MenuMapeditor.prototype.newWrapper = function() {
+	var self = this;
+	var func = function() {
+		self.active_map = null;
+		controller.newMap();
+	}
+	return func;
+}
+
 MenuMapeditor.prototype.saveWrapper = function() {
 	var self = this;
-	var func = function(evt) {
+	var func = function() {
 		// Check working directoru
 		$('#maps-dir').css('border-color', '');
 		if (self.maps_dir == null) {

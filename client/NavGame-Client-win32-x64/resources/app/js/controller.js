@@ -20,6 +20,15 @@ Controller = function(active_tab) {
 	$('#menu-tab-viewer').mousedown(()=>this.setActiveTab('viewer'));
 	//$('#menu-tab-newgame').mousedown(()=>this.setActiveTab('newgame'));
 	$('#menu-tab-mapeditor').mousedown(()=>this.setActiveTab('mapeditor'));
+
+	var self = this;
+	$('#palette-drawings').click(
+		images.changeImagesWrapper('drawings', self.refreshBoardWrapper()));
+	$('#palette-circles').click(
+		images.changeImagesWrapper('circles', self.refreshBoardWrapper()));
+}
+
+Controller.prototype.start = function() {
 }
 
 Controller.prototype.resizeElements = function() {
@@ -32,12 +41,14 @@ Controller.prototype.resizeElements = function() {
 	$('#menu').css('width', $('#body').outerWidth() - content_width + 'px');
 
 	var menucontent_height = $('#menu').innerHeight() -
-							 $('#menu-tab').innerHeight();
+							 $('#menu-tab').innerHeight() -
+							 $('#menu-images').innerHeight();
 	$('#menu-content').css('height', menucontent_height + 'px');
 	this.menus[this.active_tab].resizeElements();
 
-	if (this.active_tab == 'games' || this.active_tab == 'viewer') this.contents['game'].resizeElements();
-	else this.contents[this.active_tab].resizeElements();
+	if (this.active_tab == 'games' || this.active_tab == 'viewer') {
+		this.contents['game'].resizeElements();
+	} else this.contents[this.active_tab].resizeElements();
 }
 
 Controller.prototype.setActiveTab = function(active_tab) {
@@ -50,14 +61,26 @@ Controller.prototype.setActiveTab = function(active_tab) {
 	if (this.active_tab == 'viewer' || this.active_tab == 'mapeditor') {
 		$('#content').css('visibility', 'visible');
 	}
-	if (this.active_tab == 'games' || this.active_tab == 'viewer') this.contents['game'].render();
-	else this.contents[this.active_tab].render();
+	if (this.active_tab == 'games' || this.active_tab == 'viewer') {
+		this.contents['game'].render();
+	} else this.contents[this.active_tab].render();
 }
 
 Controller.prototype.render = function() {
 	this.menus[this.active_tab].render();
-	if (this.active_tab == 'games' || this.active_tab == 'viewer') this.contents['game'].render();
-	else this.contents[this.active_tab].render();
+	if (this.active_tab == 'games' || this.active_tab == 'viewer') {
+		this.contents['game'].render();
+	} else this.contents[this.active_tab].render();
+}
+
+Controller.prototype.refreshBoardWrapper = function() {
+	var self = this;
+	var func = function() {
+		if (self.active_tab == 'games' || self.active_tab == 'viewer') {
+			self.contents['game'].refreshBoard();
+		} else self.contents[self.active_tab].refreshBoard();
+	};
+	return func;
 }
 
 Controller.prototype.setGameDir = function(game_dir) {
@@ -82,6 +105,12 @@ Controller.prototype.setSelected = function(selected) {
 
 Controller.prototype.saveMap = function(file) {
 	this.contents['mapeditor'].saveMap(file);
+}
+
+Controller.prototype.newMap = function() {
+	this.contents['mapeditor'].newMap();
+	this.menus['mapeditor'].render();
+	this.contents['mapeditor'].render();
 }
 
 exports.Controller = Controller;
