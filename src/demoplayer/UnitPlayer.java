@@ -1,4 +1,4 @@
-package demo.demoplayer;
+package demoplayer;
 
 import navgame.*;
 
