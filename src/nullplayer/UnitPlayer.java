@@ -1,6 +1,6 @@
 package nullplayer;
 
-import navgame.*;
+import bugwars.*;
 
 public class UnitPlayer {
 

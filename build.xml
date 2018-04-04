@@ -54,9 +54,9 @@
 	</scriptdef>
 
 	<!-- Paths -->
-	<path id="NavGame.classpath">
+	<path id="BugWars.classpath">
 		<pathelement location="${basedir}/build/classes" />
-		<pathelement location="${basedir}/jars/navgame.jar" />
+		<pathelement location="${basedir}/jars/bugwars.jar" />
 		<pathelement location="${basedir}/jars/asm-all-5.0.3.jar" />
 	</path>
 
@@ -110,9 +110,9 @@
 		<javac
 			srcdir="${basedir}/src/"
 			destdir="${basedir}/build/classes"
-			includes="navgame/**,${path1}/**"
+			includes="bugwars/**,${path1}/**"
 			includeAntRuntime="false">
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 		</javac>
 		<record name="${basedir}/logs/compile/${folder1}" action="stop" />
 
@@ -122,9 +122,9 @@
 		<javac
 			srcdir="${basedir}/src/"
 			destdir="${basedir}/build/classes"
-			includes="navgame/**,${path2}/**"
+			includes="bugwars/**,${path2}/**"
 			includeAntRuntime="false">
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 		</javac>
 		<record name="${basedir}/logs/compile/${folder2}" action="stop" />
 	</target>
@@ -143,7 +143,7 @@
 
 		<!-- Execute the instrumenter to add bytecodes to package 1 -->
 		<java classname="instrumenter.Main" failonerror="true" fork="yes">
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 			<arg value="${basedir}/build/classes/${path1}" />
 			<arg value="${path1}" />
 			<arg value="true" />
@@ -157,7 +157,7 @@
   <target name="instrument2" depends="instrument2-check"
 		 			if="instrument2-check-property">
 		<java classname="instrumenter.Main" failonerror="true" fork="yes">
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 			<arg value="${basedir}/build/classes/${path2}" />
 			<arg value="${path2}" />
 			<arg value="true" />
@@ -186,9 +186,9 @@
 		<!-- Echo -->
 		<echo message="Running ${package1} vs ${package2}" />
 
-		<java classname="navgame.Main" failonerror="true" fork="yes">
+		<java classname="bugwars.Main" failonerror="true" fork="yes">
 			<jvmarg value="-noverify" />
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 			<arg value="${package1}" />
 			<arg value="${package2}" />
 			<arg value="${map}" />
@@ -210,11 +210,11 @@
 			destdir="${basedir}/build/classes"
 			includes="packager/**"
 			includeAntRuntime="false">
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 		</javac>
 
 		<java classname="packager.Main" failonerror="true" fork="yes">
-			<classpath refid="NavGame.classpath" />
+			<classpath refid="BugWars.classpath" />
 			<arg value="${package}" />
 		</java>
 	</target>
