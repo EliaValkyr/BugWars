@@ -85,13 +85,11 @@ Controller.prototype.refreshBoardWrapper = function() {
 
 Controller.prototype.setGameDir = function(game_dir) {
 	this.contents['game'].setGameDir(game_dir);
-	this.contents['game'].render();
 	this.setActiveTab('viewer');
 }
 
 Controller.prototype.setGameFile = function(game_file) {
 	this.contents['game'].setGameFile(game_file);
-	this.contents['game'].render();
 	this.setActiveTab('viewer');
 }
 

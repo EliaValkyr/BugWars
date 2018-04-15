@@ -92,7 +92,7 @@ Game.prototype.setGameMetainfo = function() {
 		$('#menu-viewer-info2').css('border-style', 'solid');
 		$('#menu-viewer-info2').css('border-color', this.team2.color);
 	}
-	$('#wincondition').html(this.winCondition);
+	$('#wincondition').html(this.win_condition);
 }
 
 Game.prototype.setUnitsInfo = function(team, id) {
@@ -260,6 +260,7 @@ Game.prototype.paintRound = function() {
 
 	// Selected unit
 	if (this.selectedUnitId != null) {
+		var done = false;
 		for (var i = 0; i < round.team1.units.length; i++) {
 			var unit = round.team1.units[i];
 			if (unit.id == this.selectedUnitId) {
@@ -267,15 +268,20 @@ Game.prototype.paintRound = function() {
 				this.painter.paintRange(unit.x, unit.y, unit.type.attack_range, unit.type.min_attack_range, "red");
 				this.setClickedUnitInfo(unit, this.team1);
 				if (this.drawings1 != null) this.painter.paintDrawings(this.drawings1[this.curr_round], unit.id);
+				done = true;
+				break;
 			}
 		}
-		for (var i = 0; i < round.team2.units.length; i++) {
-			var unit = round.team2.units[i];
-			if (unit.id == this.selectedUnitId) {
-				this.painter.paintRange(unit.x, unit.y, unit.type.sight_range, 0, "green");
-				this.painter.paintRange(unit.x, unit.y, unit.type.attack_range, unit.type.min_attack_range, "red");
-				this.setClickedUnitInfo(unit, this.team2);
-				if (this.drawings2 != null) this.painter.paintDrawings(this.drawings2[this.curr_round], unit.id);
+		if (!done) {
+			for (var i = 0; i < round.team2.units.length; i++) {
+				var unit = round.team2.units[i];
+				if (unit.id == this.selectedUnitId) {
+					this.painter.paintRange(unit.x, unit.y, unit.type.sight_range, 0, "green");
+					this.painter.paintRange(unit.x, unit.y, unit.type.attack_range, unit.type.min_attack_range, "red");
+					this.setClickedUnitInfo(unit, this.team2);
+					if (this.drawings2 != null) this.painter.paintDrawings(this.drawings2[this.curr_round], unit.id);
+					done = true;
+				}
 			}
 		}
 		$('#menu-viewer-infoclicked-content').css('display', 'inline-block');
@@ -492,8 +498,9 @@ Game.prototype.checkClickedUnit = function(units, mouseX, mouseY) {
 	for (var i = 0; i < units.length; i++) {
 		var unit = units[i];
 		this.painter.define(unit.x, this.board.nr - 1 - unit.y);
-		if(this.ctx.isPointInPath(mouseX, mouseY)) {
+		if (this.ctx.isPointInPath(mouseX, mouseY)) {
 			this.selectedUnitId = unit.id;
+			break;
 		}
 	}
 }
@@ -504,6 +511,7 @@ Game.prototype.checkClickedFood = function(mouseX, mouseY) {
 		this.painter.define(food.x, this.board.nr - 1 - food.y);
 		if(this.ctx.isPointInPath(mouseX, mouseY)) {
 			this.selectedFood = {'x': food.x, 'y': food.y};
+			break;
 		}
 	}
 }
@@ -514,6 +522,7 @@ Game.prototype.checkClickedWall = function(mouseX, mouseY) {
 		this.painter.define(wall.x, this.board.nr - 1 - wall.y);
 		if(this.ctx.isPointInPath(mouseX, mouseY)) {
 			this.selectedWall = {'x': wall.x, 'y': wall.y};
+			break;
 		}
 	}
 }
@@ -530,7 +539,7 @@ Game.prototype.handleMouseDown = function(e) {
 	this.selectedWall = null;
 	var round = this.rounds[this.curr_round];
 	this.checkClickedUnit(round.team1.units, mouseX, mouseY);
-	this.checkClickedUnit(round.team2.units, mouseX, mouseY);
+	if (this.selectedUnitId == null) this.checkClickedUnit(round.team2.units, mouseX, mouseY);
 	if (this.selectedUnitId == null) this.checkClickedFood(mouseX, mouseY);
 	if (this.selectedUnitId == null) this.checkClickedWall(mouseX, mouseY);
 	this.paintRound();

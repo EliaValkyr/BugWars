@@ -28,12 +28,12 @@ Mapp = function() {
 
 Mapp.prototype.render = function() {
 	if (this.nr == null) return;
-
+	
 	var self = this;
 	$("#mapeditor-board-canvas").mousedown(function(e) { self.handleMouseDown(e); });
 	this.ctx = $('#mapeditor-board-canvas')[0].getContext('2d');
 	this.painter = new Painter(this.ctx, this.nr, this.nc, 'mapeditor-board');
-
+	
 	this.canvas_width = $('#mapeditor-board').innerWidth();
 	this.canvas_height = $('#mapeditor-board').innerHeight();
 	$('#mapeditor-board-canvas').attr('width', this.canvas_width);
@@ -135,7 +135,7 @@ Mapp.prototype.addElement = function(img, x, y) {
 			$('#wall-health').css('border-color', 'red');
 			return;
 		}
-		this.walls[x][y] = 'health';
+		this.walls[x][y] = health;
 		this.board[x][y] = null;
 		this.foods[x][y] = null;
 	}
@@ -178,7 +178,7 @@ Mapp.prototype.checkSymmetryAndAdd = function(x, y) {
 	}
 }
 
-/***************************** handleMouseDown *******************************/
+/***************************** handleMouse ***********************************/
 Mapp.prototype.handleMouseDown = function(e) {
 	if (this.selected == null) return;
 	e.preventDefault();
@@ -188,14 +188,39 @@ Mapp.prototype.handleMouseDown = function(e) {
 	var mouseY = parseInt(e.clientY - $("#mapeditor-board-canvas").offset().top);
 
 	// All cells
-	for (var x = 0; x < this.nc; x++) {
-		for (var y = 0; y < this.nr; y++) {
+	var done = false;
+	for (var x = 0; !done && x < this.nc; x++) {
+		for (var y = 0; !done && y < this.nr; y++) {
 			// define the current shape
 			this.painter.define(x, y);
 			// test if the mouse is in the current shape
 			if (this.ctx.isPointInPath(mouseX, mouseY)) {
 				this.checkSymmetryAndAdd(x, y);
 				this.paintBoard();
+				done = true;
+			}
+		}
+	}
+}
+
+Mapp.prototype.handleMouseMove = function(e) {
+	e.preventDefault();
+
+	// get the mouse position
+	var mouseX = parseInt(e.clientX - $("#mapeditor-board-canvas").offset().left);
+	var mouseY = parseInt(e.clientY - $("#mapeditor-board-canvas").offset().top);
+	
+	// All cells
+	var done = false;
+	for (var x = 0; !done && x < this.nc; x++) {
+		for (var y = 0; !done && y < this.nr; y++) {
+			// define the current shape
+			this.painter.define(x, y);
+			// test if the mouse is in the current shape
+			if (this.ctx.isPointInPath(mouseX, mouseY)) {
+				if (this.walls[x][y] != null) $('#wall-health-hover').val(this.walls[x][y]);
+				else if (this.foods[x][y] != null) $('#food-quantity-hover').val(this.foods[x][y]);
+				done = true;
 			}
 		}
 	}
@@ -262,6 +287,7 @@ Mapp.prototype.save = function(file) {
 
 	if (fs.existsSync(file)) fs.unlinkSync(file);
 	fs.appendFileSync(file, '' + this.nr + ' ' + this.nc + '\n');
+	fs.appendFileSync(file, this.symmetry + '\n');
 	fs.appendFileSync(file, '' + this.offsetx + ' ' + this.offsety + '\n');
 	fs.appendFileSync(file, '' + this.p_walls.length + '\n')
 	for (var i = 0; i < this.p_walls.length; i++) {
