@@ -88,11 +88,6 @@ Controller.prototype.setGameDir = function(game_dir) {
 	this.setActiveTab('viewer');
 }
 
-Controller.prototype.setGameFile = function(game_file) {
-	this.contents['game'].setGameFile(game_file);
-	this.setActiveTab('viewer');
-}
-
 Controller.prototype.setMapFile = function(map_file) {
 	this.contents['mapeditor'].loadMap(map_file + '.txt');
 }

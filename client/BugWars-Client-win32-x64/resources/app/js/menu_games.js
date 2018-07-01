@@ -33,7 +33,7 @@ MenuGames.prototype.render = function() {
 	var self = this;
 	$('#menu-content').load('views/menu_games.html', function(data) {
 		$('#games-dir-input').change(self.selectGamesDirWrapper());
-		$('#games-file-input').change(self.selectFileWrapper());
+		$('#games-dir-from-fs-input').change(self.selectDirWrapper());
 		fs.exists(self.default_games_dir_file, function(exists) {
 			if (exists) {
 				fs.readFile(self.default_games_dir_file, 'utf-8', (err, data) => {
@@ -113,12 +113,12 @@ MenuGames.prototype.selectFileFromListWrapper = function(filename) {
 	return func;
 }
 
-MenuGames.prototype.selectFileWrapper = function() {
+MenuGames.prototype.selectDirWrapper = function() {
 	var self = this;
 	var func = function(evt) {
 		if (evt.target.files.length == 0) return;
 		$('.games').removeClass('active');
-		controller.setGameFile(evt.target.files[0]['path']);
+		controller.setGameDir(evt.target.files[0]['path']);
 		$('#menu-tab-viewer').css('display', 'inline');
 		$('#games-file-input').val("");
 	}

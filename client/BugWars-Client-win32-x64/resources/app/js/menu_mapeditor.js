@@ -15,7 +15,7 @@ MenuMapeditor.prototype.render = function() {
 	$('#menu-content').load('views/menu_mapeditor.html', function(data) {
 		images.updateImages();
 
-		$('#symmetry-horitzonal').click(()=>self.checkAndInitializeMap('horitzonal'));
+		$('#symmetry-horizontal').click(()=>self.checkAndInitializeMap('horizontal'));
 		$('#symmetry-vertical').click(()=>self.checkAndInitializeMap('vertical'));
 		$('#symmetry-rotational').click(()=>self.checkAndInitializeMap('rotational'));
 
@@ -103,7 +103,7 @@ MenuMapeditor.prototype.initializeMap = function(nr, nc, offsetx, offsety, symme
 	$('#mapeditor-offsetx').prop('disabled', true);
 	$('#mapeditor-offsety').prop('disabled', true);
 
-	$('#symmetry-horitzonal').css('display', 'none');
+	$('#symmetry-horizontal').css('display', 'none');
 	$('#symmetry-vertical').css('display', 'none');
 	$('#symmetry-rotational').css('display', 'none');
 	$('#mapeditor-symmetry').html($('#symmetry-' + symmetry).html());
@@ -120,7 +120,7 @@ MenuMapeditor.prototype.checkAndInitializeMap = function(symmetry) {
 	$('#mapeditor-offsety').css('border-color', '');
 
 	var board_size = parseInt($('#mapeditor-board-size').val());
-	if (isNaN(board_size) || board_size < 2 || board_size > 50) {
+	if (isNaN(board_size) || board_size < 20 || board_size > 80) {
 		$('#mapeditor-board-size').css('border-color', 'red');
 		return;
 	}

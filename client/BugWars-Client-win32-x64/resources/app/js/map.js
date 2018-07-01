@@ -28,12 +28,12 @@ Mapp = function() {
 
 Mapp.prototype.render = function() {
 	if (this.nr == null) return;
-	
+
 	var self = this;
 	$("#mapeditor-board-canvas").mousedown(function(e) { self.handleMouseDown(e); });
 	this.ctx = $('#mapeditor-board-canvas')[0].getContext('2d');
 	this.painter = new Painter(this.ctx, this.nr, this.nc, 'mapeditor-board');
-	
+
 	this.canvas_width = $('#mapeditor-board').innerWidth();
 	this.canvas_height = $('#mapeditor-board').innerHeight();
 	$('#mapeditor-board-canvas').attr('width', this.canvas_width);
@@ -91,21 +91,21 @@ Mapp.prototype.paintBoard = function() {
 	for (var x = 0; x < this.nc; x++) {
 		for (var y = 0; y < this.nr; y++) {
 			if (this.foods[x][y] != null) {
-				this.painter.paintElement(images.food, x, this.nr - 1 -y);
+				this.painter.paintElement(images.food, x, this.nr - 1 - y);
 			}
 		}
 	}
 	for (var x = 0; x < this.nc; x++) {
 		for (var y = 0; y < this.nr; y++) {
 			if (this.walls[x][y] != null) {
-				this.painter.paintElement(images.wall, x, this.nr - 1 -y);
+				this.painter.paintElement(images.wall, x, this.nr - 1 - y);
 			}
 		}
 	}
 	for (var x = 0; x < this.nc; x++) {
 		for (var y = 0; y < this.nr; y++) {
 			if (this.board[x][y] != null) {
-				this.painter.paintElement(images.get(this.board[x][y]), x, this.nr - 1 -y);
+				this.painter.paintElement(images.get(this.board[x][y]), x, this.nr - 1 - y);
 			}
 		}
 	}
@@ -161,21 +161,27 @@ Mapp.prototype.getSymmetrical = function() {
 	if (this.selected == 'erase') return 'erase';
 }
 
+Mapp.prototype.applySymmetryX = function(x) {
+	if (this.symmetry == 'horizontal') return this.nc - 1 - x;
+	if (this.symmetry == 'rotational') return this.nc - 1 - x;
+	return x;
+}
+
+Mapp.prototype.applySymmetryY = function(y) {
+	if (this.symmetry == 'vertical') return this.nr - 1 - y;
+	if (this.symmetry == 'rotational') return this.nr - 1 - y;
+	return y;
+}
+
 Mapp.prototype.checkSymmetryAndAdd = function(x, y) {
 	if (this.selected != 'wall' && this.selected != 'food' && this.selected != 'erase') {
-		if (this.symmetry == 'horitzonal' && x == Math.floor(this.nc / 2)) return;
+		if (this.symmetry == 'horizontal' && x == Math.floor(this.nc / 2)) return;
 		if (this.symmetry == 'vertical' && y == Math.floor(this.nr / 2)) return;
 		if (this.symmetry == 'rotational' && x == Math.floor(this.nc / 2) &&
 				y == Math.floor(this.nr / 2)) return;
 	}
 	this.addElement(this.selected, x, y);
-	if (this.symmetry == 'horitzonal') {
-		this.addElement(this.getSymmetrical(), this.nc - 1 - x, y);
-	} else if (this.symmetry == 'vertical') {
-		this.addElement(this.getSymmetrical(), x, this.nr - 1 - y);
-	} else if (this.symmetry == 'rotational') {
-		this.addElement(this.getSymmetrical(), this.nc - 1 - x, this.nr - 1 - y);
-	}
+	this.addElement(this.getSymmetrical(), this.applySymmetryX(x), this.applySymmetryY(y));
 }
 
 /***************************** handleMouse ***********************************/
@@ -209,7 +215,7 @@ Mapp.prototype.handleMouseMove = function(e) {
 	// get the mouse position
 	var mouseX = parseInt(e.clientX - $("#mapeditor-board-canvas").offset().left);
 	var mouseY = parseInt(e.clientY - $("#mapeditor-board-canvas").offset().top);
-	
+
 	// All cells
 	var done = false;
 	for (var x = 0; !done && x < this.nc; x++) {
@@ -258,16 +264,22 @@ Mapp.prototype.parseBoard = function() {
 	this.p_units2 = new Array();
 	for (var x = 0; x < this.nc; x++) {
 		for (var y = 0; y < this.nr; y++) {
-			if (this.board[x][y] == 'queen1') this.p_units1.push(new Unit(0, x, y));
-			else if (this.board[x][y] == 'ant1') this.p_units1.push(new Unit(1, x, y));
-			else if (this.board[x][y] == 'beetle1') this.p_units1.push(new Unit(2, x, y));
-			else if (this.board[x][y] == 'spider1') this.p_units1.push(new Unit(3, x, y));
-			else if (this.board[x][y] == 'bee1') this.p_units1.push(new Unit(4, x, y));
-			else if (this.board[x][y] == 'queen2') this.p_units2.push(new Unit(0, x, y));
-			else if (this.board[x][y] == 'ant2') this.p_units2.push(new Unit(1, x, y));
-			else if (this.board[x][y] == 'beetle2') this.p_units2.push(new Unit(2, x, y));
-			else if (this.board[x][y] == 'spider2') this.p_units2.push(new Unit(3, x, y));
-			else if (this.board[x][y] == 'bee2') this.p_units2.push(new Unit(4, x, y));
+			if (this.board[x][y] == 'queen1') {
+				this.p_units1.push(new Unit(0, x, y));
+				this.p_units2.push(new Unit(0, this.applySymmetryX(x), this.applySymmetryY(y)));
+			} else if (this.board[x][y] == 'ant1') {
+				this.p_units1.push(new Unit(1, x, y));
+				this.p_units2.push(new Unit(1, this.applySymmetryX(x), this.applySymmetryY(y)));
+			} else if (this.board[x][y] == 'beetle1') {
+				this.p_units1.push(new Unit(2, x, y));
+				this.p_units2.push(new Unit(2, this.applySymmetryX(x), this.applySymmetryY(y)));
+			} else if (this.board[x][y] == 'spider1') {
+				this.p_units1.push(new Unit(3, x, y));
+				this.p_units2.push(new Unit(3, this.applySymmetryX(x), this.applySymmetryY(y)));
+			} else if (this.board[x][y] == 'bee1') {
+				this.p_units1.push(new Unit(4, x, y));
+				this.p_units2.push(new Unit(4, this.applySymmetryX(x), this.applySymmetryY(y)));
+			}
 		}
 	}
 	for (var x = 0; x < this.nc; x++) {
@@ -287,8 +299,8 @@ Mapp.prototype.save = function(file) {
 
 	if (fs.existsSync(file)) fs.unlinkSync(file);
 	fs.appendFileSync(file, '' + this.nr + ' ' + this.nc + '\n');
-	fs.appendFileSync(file, this.symmetry + '\n');
 	fs.appendFileSync(file, '' + this.offsetx + ' ' + this.offsety + '\n');
+	fs.appendFileSync(file, this.symmetry + '\n');
 	fs.appendFileSync(file, '' + this.p_walls.length + '\n')
 	for (var i = 0; i < this.p_walls.length; i++) {
 		fs.appendFileSync(file, '' + this.p_walls[i].x + ' ' + (this.nr - 1 - this.p_walls[i].y) + ' ' + this.p_walls[i].health + '\n')
@@ -329,13 +341,13 @@ Mapp.load = function(file) {
 	var n_obs = parseInt(lines[line++]);
 	for (var i = 0; i < n_obs; i++) {
 		var tokens = lines[line++].split(' ');
-		mapp.walls[parseInt(tokens[0])][parseInt(tokens[1])] = 1000;
+		mapp.walls[parseInt(tokens[0])][mapp.nr - 1 - parseInt(tokens[1])] = 1000;
 	}
 	// Food
 	var n_food = parseInt(lines[line++]);
 	for (var i = 0; i < n_food; i++) {
 		var tokens = lines[line++].split(' ');
-		mapp.foods[parseInt(tokens[0])][parseInt(tokens[1])] = parseInt(tokens[2]);
+		mapp.foods[parseInt(tokens[0])][mapp.nr - 1 - parseInt(tokens[1])] = parseInt(tokens[2]);
 	}
 	// Units1
 	var n_units1 = parseInt(lines[line++]);
@@ -347,7 +359,7 @@ Mapp.load = function(file) {
 		else if (parseInt(tokens[2]) == 2) img = 'beetle1';
 		else if (parseInt(tokens[2]) == 4) img = 'spider1';
 		else if (parseInt(tokens[2]) == 3) img = 'bee1';
-		mapp.board[parseInt(tokens[0])][parseInt(tokens[1])] = img;
+		mapp.board[parseInt(tokens[0])][mapp.nr - 1 - parseInt(tokens[1])] = img;
 	}
 	// Units2
 	var n_units2 = parseInt(lines[line++]);
@@ -359,7 +371,7 @@ Mapp.load = function(file) {
 		else if (parseInt(tokens[2]) == 2) img = 'beetle2';
 		else if (parseInt(tokens[2]) == 4) img = 'spider2';
 		else if (parseInt(tokens[2]) == 3) img = 'bee2';
-		mapp.board[parseInt(tokens[0])][parseInt(tokens[1])] = img;
+		mapp.board[parseInt(tokens[0])][mapp.nr - 1 - parseInt(tokens[1])] = img;
 	}
 	mapp.ctx = null;
 	return mapp;

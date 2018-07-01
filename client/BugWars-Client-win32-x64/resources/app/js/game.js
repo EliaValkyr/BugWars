@@ -13,9 +13,9 @@ var Turn = rq("./js/objects.js").Turn;
 var TeamTurn = rq("./js/objects.js").TeamTurn;
 var unit_types = rq("./js/objects.js").unit_types;
 
-Game = function(game_file = null, game_dir = null) {
+Game = function(game_dir) {
 	this.game_dir = game_dir;
-	if (game_file != null) this.loadGame(game_file);
+	this.loadGame();
 }
 
 Game.prototype.render = function() {
@@ -39,7 +39,7 @@ Game.prototype.render = function() {
 	this.paintRound();
 }
 
-Game.prototype.loadGame = function(game_file) {
+Game.prototype.loadGame = function() {
 	this.BASIC_SPEED = 500;
 
 	this.board = null;
@@ -55,7 +55,9 @@ Game.prototype.loadGame = function(game_file) {
 	this.cw = null;
 	this.ch = null;
 
-	var game_str = fs.readFileSync(game_file).toString();
+	var game_info_str = fs.readFileSync(this.game_dir + "/game_info.txt").toString();
+	this.parseGameInfo(game_info_str);
+	var game_str = fs.readFileSync(this.game_dir + "/game.txt").toString();
 	this.parseGame(game_str);
 	this.parseDrawings();
 
@@ -310,23 +312,36 @@ Game.prototype.paintRound = function() {
 }
 
 /***************************** Parser ****************************************/
+Game.prototype.parseGameInfo = function(game_info_str) {
+	// By lines
+	var lines = game_info_str.split('\n');
+	var line = 0;
+	// User and player 1
+	var tokens = lines[line++].split(' ');
+	this.team1 = new Team("blue", tokens[0], tokens[1]);
+	// User and player 2
+	var tokens = lines[line++].split(' ');
+	this.team2 = new Team("red", tokens[0], tokens[1]);
+	// Board size
+	var tokens = lines[line++].split(' ');
+	this.board = new Board(parseInt(tokens[0]), parseInt(tokens[1]));
+	// Winner
+	var token = lines[line++];
+	if (token == 1) this.winner = this.team1;
+	else if (token == 2) this.winner = this.team2;
+	else this.winner = null;
+	this.win_condition = lines[line++];
+	// N rounds
+	this.n_rounds = parseInt(lines[line++]);
+}
+
 Game.prototype.parseGame = function(game_str) {
 	// By lines
 	var lines = game_str.split('\n');
 	var line = 0;
-	// User and player 1
-	var token = lines[line++];
-	this.team1 = new Team("blue", token);
-	// User and player 2
-	var token = lines[line++];
-	this.team2 = new Team("red", token);
-	// Board size
-	var tokens = lines[line++].split(' ');
-	this.board = new Board(parseInt(tokens[0]), parseInt(tokens[1]));
-	// Turns
-	var n_rounds = parseInt(lines[lines.length - 2]);
-	this.rounds = new Array(n_rounds);
-	for (var k_round = 0; k_round < n_rounds; k_round++) {
+	// Rounds
+	this.rounds = new Array(this.n_rounds);
+	for (var k_round = 0; k_round < this.n_rounds; k_round++) {
 		// Obstacles
 		var n_obs = parseInt(lines[line++]);
 		var walls = new Array(n_obs);
@@ -379,12 +394,6 @@ Game.prototype.parseGame = function(game_str) {
 		}
 		this.rounds[k_round] = new Turn(walls, foods, team_round[0], team_round[1]);
 	}
-	// Winner
-	var token = lines[line++];
-	if (token == 1) this.winner = this.team1;
-	else if (token == 2) this.winner = this.team2;
-	else this.winner = null;
-	this.win_condition = lines[line++];
 }
 
 Game.prototype.parseDrawing = function(team_id) {

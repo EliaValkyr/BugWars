@@ -4,31 +4,31 @@ import bugwars.*;
 
 public class UnitPlayer {
 
-    public void run(UnitController uc) throws InterruptedException {
+    public void run(UnitController uc) {
 	/*Insert here the code that should be executed only at the beginning of the unit's lifespan*/
 
 	    /*enemy team*/
-	    Team opponent = uc.getTeam().getOpponent();
+        Team opponent = uc.getOpponent();
 
         while (true){
 			/*Insert here the code that should be executed every round*/
 
-			/*Generate a random number from 1 to 8*/
-			int randomNumber = (int)(Math.random()*8);
+			/*Generate a random number from 0 to 7, both included*/
+            int randomNumber = (int)(Math.random()*8);
 
 			/*Get corresponding direction*/
-			Direction dir = Direction.values()[randomNumber];
+            Direction dir = Direction.values()[randomNumber];
 
 			/*move in direction dir if possible*/
-			if (uc.canMove(dir)) uc.move(dir);
+            if (uc.canMove(dir)) uc.move(dir);
 
 			/*If this unit is a queen, try spawning a beetle at direction dir*/
-			if (uc.getType() == UnitType.QUEEN) {
+            if (uc.getType() == UnitType.QUEEN) {
                 if (uc.canSpawn(dir, UnitType.BEETLE)) uc.spawn(dir, UnitType.BEETLE);
             }
 
 			/*Else, go through all visible units and attack the first one you see*/
-			else {
+            else {
                 UnitInfo[] visibleEnemies = uc.senseUnits(opponent);
                 for (int i = 0; i < visibleEnemies.length; ++i) {
                     if (uc.canAttack(visibleEnemies[i])) uc.attack(visibleEnemies[i]);

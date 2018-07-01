@@ -4,7 +4,7 @@ import bugwars.*;
 
 public class UnitPlayer {
 
-    public void run(UnitController uc) throws InterruptedException {
+    public void run(UnitController uc) {
 	/*Insert here the code that should be executed only at the beginning of the unit's lifespan*/
 
         while (true){

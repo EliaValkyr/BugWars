@@ -70,12 +70,7 @@ ContentGame.prototype.loadGame = function(game_file, game_dir = null) {
 }
 
 ContentGame.prototype.setGameDir = function(game_dir) {
-	var game_file = game_dir + "/game.txt";
-	this.loadGame(game_file, game_dir);
-}
-
-ContentGame.prototype.setGameFile = function(game_file) {
-	this.loadGame(game_file);
+	this.loadGame(game_dir);
 }
 
 exports.ContentGame = ContentGame;

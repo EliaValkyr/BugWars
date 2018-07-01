@@ -54,7 +54,7 @@
 	</scriptdef>
 
 	<!-- Paths -->
-	<path id="BugWars.classpath">
+	<path id="my_classpath">
 		<pathelement location="${basedir}/build/classes" />
 		<pathelement location="${basedir}/jars/bugwars.jar" />
 		<pathelement location="${basedir}/jars/asm-all-5.0.3.jar" />
@@ -89,21 +89,17 @@
 		<replace_point string="${package2}" char="_" to="folder2" />
 		<replace_point string="${package1}" char="/" to="path1" />
 		<replace_point string="${package2}" char="/" to="path2" />
-
 		<!-- Echo -->
 		<echo message="Compiling ${package1} and ${package2}" />
-
 		<!-- Clean -->
 		<delete dir="${basedir}/build" />
 		<mkdir  dir="${basedir}/build" />
 		<mkdir  dir="${basedir}/build/classes" />
-
 		<delete dir="${basedir}/logs" />
 		<mkdir  dir="${basedir}/logs" />
 		<mkdir  dir="${basedir}/logs/compile" />
 		<mkdir  dir="${basedir}/logs/instrument" />
 		<mkdir  dir="${basedir}/logs/run" />
-
 		<!-- Compile package 1 -->
 		<record name="${basedir}/logs/compile/${folder1}" action="start"
 			 			emacsmode="true" loglevel="warn" />
@@ -112,10 +108,9 @@
 			destdir="${basedir}/build/classes"
 			includes="bugwars/**,${path1}/**"
 			includeAntRuntime="false">
-			<classpath refid="BugWars.classpath" />
+			<classpath refid="my_classpath" />
 		</javac>
 		<record name="${basedir}/logs/compile/${folder1}" action="stop" />
-
 		<!-- Compile package 2 -->
 		<record name="${basedir}/logs/compile/${folder2}" action="start"
 			 			emacsmode="true" loglevel="warn" />
@@ -124,7 +119,7 @@
 			destdir="${basedir}/build/classes"
 			includes="bugwars/**,${path2}/**"
 			includeAntRuntime="false">
-			<classpath refid="BugWars.classpath" />
+			<classpath refid="my_classpath" />
 		</javac>
 		<record name="${basedir}/logs/compile/${folder2}" action="stop" />
 	</target>
@@ -137,18 +132,15 @@
 		<replace_point string="${package2}" char="_" to="folder2" />
 		<replace_point string="${package1}" char="/" to="path1" />
 		<replace_point string="${package2}" char="/" to="path2" />
-
 		<!-- Echo -->
 		<echo message="Instrumenting ${package1} and ${package2}" />
-
 		<!-- Execute the instrumenter to add bytecodes to package 1 -->
 		<java classname="instrumenter.Main" failonerror="true" fork="yes">
-			<classpath refid="BugWars.classpath" />
+			<classpath refid="my_classpath" />
 			<arg value="${basedir}/build/classes/${path1}" />
 			<arg value="${path1}" />
 			<arg value="true" />
 		</java>
-
 		<!-- Execute the instrumenter to add bytecodes to package 2 -->
 		<antcall target="instrument2" />
 	</target>
@@ -157,7 +149,7 @@
   <target name="instrument2" depends="instrument2-check"
 		 			if="instrument2-check-property">
 		<java classname="instrumenter.Main" failonerror="true" fork="yes">
-			<classpath refid="BugWars.classpath" />
+			<classpath refid="my_classpath" />
 			<arg value="${basedir}/build/classes/${path2}" />
 			<arg value="${path2}" />
 			<arg value="true" />
@@ -182,40 +174,15 @@
 		<replace_point string="${package2}" char="_" to="folder2" />
 		<replace_point string="${package1}" char="/" to="path1" />
 		<replace_point string="${package2}" char="/" to="path2" />
-
 		<!-- Echo -->
 		<echo message="Running ${package1} vs ${package2}" />
-
+		<!-- Run -->
 		<java classname="bugwars.Main" failonerror="true" fork="yes">
 			<jvmarg value="-noverify" />
-			<classpath refid="BugWars.classpath" />
+			<classpath refid="my_classpath" />
 			<arg value="${package1}" />
 			<arg value="${package2}" />
 			<arg value="${map}" />
-		</java>
-	</target>
-
-	<!-- Package tasks -->
-	<target name="package">
-		<!-- Parameters -->
-		<get_property prop="package" />
-
-		<!-- Echo -->
-		<echo message="Packaging source code" />
-
-		<!-- Clean, compile and run packager -->
-		<delete dir="${basedir}/build/classes/packager" />
-		<javac
-			srcdir="${basedir}/src/"
-			destdir="${basedir}/build/classes"
-			includes="packager/**"
-			includeAntRuntime="false">
-			<classpath refid="BugWars.classpath" />
-		</javac>
-
-		<java classname="packager.Main" failonerror="true" fork="yes">
-			<classpath refid="BugWars.classpath" />
-			<arg value="${package}" />
 		</java>
 	</target>
 
