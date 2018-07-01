@@ -18,7 +18,7 @@ public class UnitPlayer {
 
 			/*Get corresponding direction*/
             Direction dir = Direction.values()[randomNumber];
-
+            int i = 1;
 			/*move in direction dir if possible*/
             if (uc.canMove(dir)) uc.move(dir);
 
