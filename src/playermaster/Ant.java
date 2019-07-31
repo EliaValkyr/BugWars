@@ -184,6 +184,6 @@ public class Ant extends Attacker {
 
     @Override
     protected void Move() {
-        travel.TravelTo(target, obstacles);
+        travel.TravelTo(target, obstacles, false);
     }
 }
