@@ -1,3 +1,3 @@
-package1=demoplayer
-package2=nullplayer
-map=Basic1
+package1=playermaster
+package2=player2
+map=Grid

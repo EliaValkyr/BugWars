@@ -1,6 +1,0 @@
-demoplayer
-nullplayer
-25 25
-1
-Destruction!
-815
