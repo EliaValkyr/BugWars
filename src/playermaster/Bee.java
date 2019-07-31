@@ -67,6 +67,7 @@ public class Bee extends Troop {
 
     @Override
     protected void Move() {
+		if (!uc.canMove()) return;
         travel.TravelTo(target, obstacles);
     }
 }

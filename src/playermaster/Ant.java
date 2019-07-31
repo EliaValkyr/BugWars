@@ -184,6 +184,7 @@ public class Ant extends Attacker {
 
     @Override
     protected void Move() {
+		if (!uc.canMove()) return;
         travel.TravelTo(target, obstacles, false);
     }
 }

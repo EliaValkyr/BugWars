@@ -5,29 +5,36 @@ import bugwars.*;
 public abstract class Troop extends Attacker {
     abstract int GetCellValue(UnitType unitType, int dx, int dy);
 
+    private Location FindSpider() {
+		for (UnitInfo enemy: enemyUnits) {
+			if (enemy.getType() == UnitType.SPIDER)
+				return enemy.getLocation();
+		}
+		return null;
+	}
+
     protected void MoveCombat() {
-        int bestDirValue = Integer.MIN_VALUE;
-        Direction bestDir = null;
-        for(Direction direction: Direction.values()) {
-            if (!uc.canMove(direction)) continue;
-            int dirValue = 0;
-            Location newLoc = myLoc.add(direction);
-            for (UnitInfo enemy: enemyUnits) {
-                int dx = Math.abs(newLoc.x = enemy.getLocation().x);
-                int dy = Math.abs(newLoc.y = enemy.getLocation().y);
-                dirValue += GetCellValue(enemy.getType(), dx, dy);
-            }
-            if (dirValue > bestDirValue) {
-                bestDirValue = dirValue;
-                bestDir = direction;
-            }
-        }
-        if (bestDir != null) uc.move(bestDir);
+    	Location spiderLocation = FindSpider();
+    	if (spiderLocation != null) {
+    		Direction dir = myLoc.directionTo(spiderLocation);
+    		if (uc.canMove(dir)) uc.move(dir);
+		}
+		for (UnitInfo enemy: enemyUnits) {
+			Direction dir = myLoc.directionTo(enemy.getLocation());
+			if (uc.canMove(dir)) uc.move(dir);
+		}
     }
 
     @Override
     protected void Move() {
+    	if (!uc.canMove()) return;
         if (inCombat) MoveCombat();
         else travel.TravelTo(target, obstacles);
     }
+
+    @Override
+	protected void InitTurn() {
+    	super.InitTurn();
+    	inCombat = enemyUnits.length > 0;
+	}
 }

@@ -96,6 +96,7 @@ public class Queen extends Unit{
 
     @Override
     protected void Move() {
+		if (!uc.canMove()) return;
         int tries = 5;
         while (tries-- > 0) {
             Direction dir = Direction.values()[(int) (Math.random() * 8)];
