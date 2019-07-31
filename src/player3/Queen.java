@@ -1,4 +1,4 @@
-package playermaster;
+package player3;
 
 import bugwars.*;
 
@@ -91,21 +91,17 @@ public class Queen extends Unit{
 
     @Override
     protected void PickTargetToMove() {
-        target = uc.getEnemyQueensLocation()[0];
+        target = myLoc;
     }
 
     @Override
     protected void Move() {
 		if (!uc.canMove()) return;
-		if (inCombat) {
-			Direction dir = myLoc.directionTo(enemyUnits[0].getLocation()).opposite();
-//			Location target = new Location(myLoc.x + dir.dx * 5, myLoc.y + dir.dy * 5);
-			Location target = myLoc.add(dir).add(dir).add(dir).add(dir).add(dir);
-			travel.TravelTo(target, obstacles);
-		}
-		else {
-			travel.TravelTo(target, obstacles);
-		}
+        int tries = 5;
+        while (tries-- > 0) {
+            Direction dir = Direction.values()[(int) (Math.random() * 8)];
+            if (uc.canMove(dir)) uc.move(dir);
+        }
     }
 
 

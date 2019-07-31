@@ -1,4 +1,4 @@
-package playermaster;
+package player3;
 
 import bugwars.*;
 
@@ -31,4 +31,10 @@ public abstract class Troop extends Attacker {
         if (inCombat) MoveCombat();
         else travel.TravelTo(target, obstacles);
     }
+
+    @Override
+	protected void InitTurn() {
+    	super.InitTurn();
+    	inCombat = enemyUnits.length > 0;
+	}
 }

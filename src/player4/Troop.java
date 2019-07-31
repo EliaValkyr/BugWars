@@ -1,4 +1,4 @@
-package playermaster;
+package player4;
 
 import bugwars.*;
 

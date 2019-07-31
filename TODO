@@ -1,0 +1,8 @@
+TODO bugwars
+
+- fer bees quan vegi spiders. Fer spiders en cert ratio des del principi o a partir del torn X
+- quan faci spiders s'ha de fer el moviment en combat (kiting)
+- fer que alguna bee vagi a per formigues de por ai
+- fer que quan matin una reina vagin a per la seguent
+- ficar al vector de comunicacio els enemics importants que hi ha (i.e spiders, tropes a prop de la base, etc)
+- Vector ciclic de comunicacio de danger, formigues i bases hi posen els enemics que tenen a prop

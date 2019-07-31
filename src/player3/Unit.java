@@ -1,4 +1,4 @@
-package playermaster;
+package player3;
 
 import bugwars.*;
 
@@ -16,7 +16,6 @@ public abstract class Unit {
     protected UnitInfo[] enemyUnits;
     protected RockInfo[] obstacles;
     protected FoodInfo[] cookies;
-	boolean inCombat;
 
     protected Location myLoc;
     protected Location target;
@@ -49,15 +48,6 @@ public abstract class Unit {
 		obstacles = uc.senseObstacles();
         myLoc = uc.getLocation();
         readFoodLocations = new TreeSet<>();
-
-        inCombat = false;
-        for (UnitInfo enemy : enemyUnits) {
-        	if (!uc.isObstructed(myLoc, enemy.getLocation())) {
-				inCombat = true;
-				break;
-			}
-
-		}
     }
 
     protected abstract void ReadMessages();
