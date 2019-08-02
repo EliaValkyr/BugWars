@@ -91,6 +91,12 @@ public class Ant extends Attacker {
         }
     }
 
+	@Override
+	protected void InitTurn() {
+		comm.Increment(comm.ANT_COUNT_CHANNEL);
+		super.InitTurn();
+	}
+
     protected boolean IsCookieFree(Location location) {
         AssignedTileMessage message = comm.ReadAssignedTileMessage(location.x, location.y);
         return message.GetAntId() == 0 || round - message.GetRound() > 5;

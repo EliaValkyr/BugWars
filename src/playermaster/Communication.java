@@ -13,15 +13,39 @@ public class Communication {
     //Unitary channels
     final int FIRST_QUEEN_X_CHANNEL = 0;
     final int FIRST_QUEEN_Y_CHANNEL = 1;
+	final int ROUND_NUM_CHANNEL = 10; //to know who is the first unit to execute
 
+	/**
+	 * - [UNIT] last round channel: how many units I had last round of that type
+	 * - [UNIT] count channel: counting how many units I have this round
+	 * - [UNIT] spawning channel: how many units are currently spawning
+	 */
+	int UNIT_COUNT = 20;
+	final int ANT_LAST_ROUND_CHANNEL = UNIT_COUNT++;
+	final int ANT_COUNT_CHANNEL = UNIT_COUNT++;
+	final int ANT_SPAWNING_COUNT_CHANNEL = UNIT_COUNT++;
+	final int BEETLE_LAST_ROUND_CHANNEL = UNIT_COUNT++;
+	final int BEETLE_COUNT_CHANNEL = UNIT_COUNT++;
+	final int BEETLE_SPAWNING_COUNT_CHANNEL = UNIT_COUNT++;
+	final int BEE_LAST_ROUND_CHANNEL = UNIT_COUNT++;
+	final int BEE_COUNT_CHANNEL = UNIT_COUNT++;
+	final int BEE_SPAWNING_COUNT_CHANNEL = UNIT_COUNT++;
+	final int SPIDER_LAST_ROUND_CHANNEL = UNIT_COUNT++;
+	final int SPIDER_COUNT_CHANNEL = UNIT_COUNT++;
+	final int SPIDER_SPAWNING_COUNT_CHANNEL = UNIT_COUNT++;
 
     //Cyclic channels
-    final int ENEMY_TROOP_CHANNEL = 1000;
-    final int ENEMY_ANT_CHANNEL = 1500;
-    final int COOKIE_CHANNEL = 2000;
-    final int EMERGENCY_CHANNEL = 2500;
-    final int NEED_TROOP_CHANNEL = 3000;
-    final int CYCLIC_CHANNEL_LENGTH = 99;
+	int CYCLIC_CHANNELS = 1000; //Cyclic channels start at 1100 because of how += works
+	final int CYCLIC_CHANNEL_LENGTH = 99;
+    final int ENEMY_TROOP_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+    final int ENEMY_ANT_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+    final int COOKIE_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+    final int EMERGENCY_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+    final int NEED_TROOP_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+	final int SPAWNING_ANTS_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+	final int SPAWNING_BEETLES_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+	final int SPAWNING_BEES_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
+	final int SPAWNING_SPIDERS_CHANNEL = CYCLIC_CHANNELS += CYCLIC_CHANNEL_LENGTH + 1;
 
     //This takes 25281 channels, holy shit
     final int ASSIGNED_TILES = 50000;
@@ -70,4 +94,17 @@ public class Communication {
     CyclicMessage ReadCyclicMessage(int channel) {
         return new CyclicMessage(uc.read(channel), xBase, yBase);
     }
+
+	void Increment(int channel) {
+		uc.write(channel, uc.read(channel) + 1);
+	}
+	int GetUnitCount(UnitType type) {
+		int count = 0;
+		if (type == UnitType.ANT) count = uc.read(ANT_LAST_ROUND_CHANNEL) + uc.read(ANT_SPAWNING_COUNT_CHANNEL);
+		if (type == UnitType.BEETLE) count = uc.read(BEETLE_LAST_ROUND_CHANNEL) + uc.read(BEETLE_SPAWNING_COUNT_CHANNEL);
+		if (type == UnitType.BEE) count = uc.read(BEE_LAST_ROUND_CHANNEL) + uc.read(BEE_SPAWNING_COUNT_CHANNEL);
+		if (type == UnitType.SPIDER) count = uc.read(SPIDER_LAST_ROUND_CHANNEL) + uc.read(SPIDER_SPAWNING_COUNT_CHANNEL);
+//        uc.println(count + " units of type " + type);
+		return count;
+	}
 }

@@ -100,6 +100,12 @@ public class Queen extends Unit{
 
     private boolean TrySpawnDirection(UnitType type, Direction direction, boolean inInitQueue) {
 		if (uc.canSpawn(direction, type)) {
+			int channel = -1;
+			if (type == UnitType.BEETLE) channel = comm.SPAWNING_BEETLES_CHANNEL;
+			else if (type == UnitType.ANT) channel = comm.SPAWNING_ANTS_CHANNEL;
+			else if (type == UnitType.BEE) channel = comm.SPAWNING_BEES_CHANNEL;
+			else if (type == UnitType.SPIDER) channel = comm.SPAWNING_SPIDERS_CHANNEL;
+			comm.SendCyclicMessage(channel, uc.getType().ordinal(), myLoc, round + GameConstants.COCOON_TURNS);
 			uc.spawn(direction, type);
 			if (inInitQueue) initQueueIndex++;
 			else cyclicQueueIndex = (cyclicQueueIndex + 1) % cyclicQueue.length;

@@ -22,6 +22,11 @@ public abstract class Unit {
     protected Location target;
     protected Location[] enemyQueensStartingLocations;
 
+	int initialMessageSpawningAnt = 0;
+	int initialMessageSpawningBeetle = 0;
+	int initialMessageSpawningBee = 0;
+	int initialMessageSpawningSpider = 0;
+
     int round = 0;
     int myId;
 
@@ -41,6 +46,39 @@ public abstract class Unit {
         enemyQueensStartingLocations = uc.getEnemyQueensLocation();
     }
 
+	private int UpdateUnitCount(int lastRoundChannel, int countChannel, int spawningChannel, int baseSpawningCyclicChannel, int initialMessage) {
+    	uc.write(lastRoundChannel, uc.read(countChannel));
+		uc.write(countChannel, 0);
+		int lastMessage = uc.read(baseSpawningCyclicChannel + comm.CYCLIC_CHANNEL_LENGTH);
+		int i = initialMessage;
+		int MAX_BYTECODE = 800;
+		int initBytecode = uc.getEnergyUsed();
+		while (i != lastMessage) {
+			if (i >= comm.CYCLIC_CHANNEL_LENGTH) i -= comm.CYCLIC_CHANNEL_LENGTH; //this should go at the end
+			if (i == lastMessage) break;
+			if (uc.getEnergyUsed() - initBytecode > MAX_BYTECODE) break;
+			CyclicMessage message = comm.ReadCyclicMessage(baseSpawningCyclicChannel + i);
+			int spawningRound = message.value;
+			if (spawningRound < round) initialMessage++;
+			i++;
+		}
+		int spawningUnits = lastMessage - initialMessage;
+		if (spawningUnits < 0) spawningUnits += comm.CYCLIC_CHANNEL_LENGTH;
+		uc.write(spawningChannel, spawningUnits);
+		return initialMessage;
+	}
+
+	private void UpdateUnitCount() {
+		initialMessageSpawningAnt = UpdateUnitCount(comm.ANT_LAST_ROUND_CHANNEL, comm.ANT_COUNT_CHANNEL,
+				comm.ANT_SPAWNING_COUNT_CHANNEL, comm.SPAWNING_ANTS_CHANNEL, initialMessageSpawningAnt);
+		initialMessageSpawningBeetle = UpdateUnitCount(comm.BEETLE_LAST_ROUND_CHANNEL, comm.BEETLE_COUNT_CHANNEL,
+				comm.BEETLE_SPAWNING_COUNT_CHANNEL, comm.SPAWNING_BEETLES_CHANNEL, initialMessageSpawningBeetle);
+		initialMessageSpawningBee = UpdateUnitCount(comm.BEE_LAST_ROUND_CHANNEL, comm.BEE_COUNT_CHANNEL,
+				comm.BEE_SPAWNING_COUNT_CHANNEL, comm.SPAWNING_BEES_CHANNEL, initialMessageSpawningBee);
+		initialMessageSpawningSpider = UpdateUnitCount(comm.SPIDER_LAST_ROUND_CHANNEL, comm.SPIDER_COUNT_CHANNEL,
+				comm.SPIDER_SPAWNING_COUNT_CHANNEL, comm.SPAWNING_SPIDERS_CHANNEL, initialMessageSpawningSpider);
+	}
+
     protected void InitTurn() {
         round = uc.getRound();
         myUnits = uc.senseUnits(myTeam);
@@ -49,6 +87,13 @@ public abstract class Unit {
 		obstacles = uc.senseObstacles();
         myLoc = uc.getLocation();
         readFoodLocations = new TreeSet<>();
+		int round2 = uc.read(comm.ROUND_NUM_CHANNEL);
+		if (round2 != round) {
+			//first unit this round
+			uc.write(comm.ROUND_NUM_CHANNEL, round);
+			if (round % 10 == 0) uc.println("Round " + round);
+			UpdateUnitCount();
+		}
 
         inCombat = false;
         for (UnitInfo enemy : enemyUnits) {
@@ -83,7 +128,7 @@ public abstract class Unit {
         boolean DEBUG = false;
         while (true){
         	try {
-//            if (round > 500) return;
+            if (round > 500) return;
 				if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " Start round " + uc.getEnergyLeft());
 				InitTurn();
 				if (DEBUG)
