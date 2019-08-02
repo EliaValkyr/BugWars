@@ -62,7 +62,7 @@ public abstract class Unit {
 
     protected abstract void ReadMessages();
 
-    protected abstract void ExecuteSpecialMechanics();
+    protected abstract void ExecuteSpecialMechanics(boolean firstTime);
 
     protected abstract void PickTargetToMove();
 
@@ -71,7 +71,7 @@ public abstract class Unit {
 	protected void SendMessages() {
 		// Send info about the new cookies.
 		for (FoodInfo cookie : cookies) {
-			if (uc.getEnergyLeft() < 50) return;
+			if (uc.getEnergyLeft() < 50 || uc.getRound() != round) return;
 			if (!readFoodLocations.contains(Utils.EncodeLocation(cookie.location))) {
 				comm.SendCyclicMessage(comm.COOKIE_CHANNEL, uc.getType().ordinal(), cookie.location, cookie.getFood());
 			}
@@ -82,22 +82,32 @@ public abstract class Unit {
         InitGame(_uc);
         boolean DEBUG = false;
         while (true){
+        	try {
 //            if (round > 500) return;
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " Start round " + uc.getEnergyLeft());
-            InitTurn();
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " Before read messages " + uc.getEnergyLeft());
-            ReadMessages();
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " Before special mechanics " + uc.getEnergyLeft());
-            ExecuteSpecialMechanics();
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " before pick target " + uc.getEnergyLeft());
-            PickTargetToMove();
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " before move " + uc.getEnergyLeft());
-            Move();
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " before special mechanics 2 " + uc.getEnergyLeft());
-            ExecuteSpecialMechanics();
-            if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " before send messages " + uc.getEnergyLeft());
-            SendMessages();
-            uc.yield();
+				if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " Start round " + uc.getEnergyLeft());
+				InitTurn();
+				if (DEBUG)
+					uc.println(uc.getInfo().getID() + " " + round + " Before read messages " + uc.getEnergyLeft());
+				ReadMessages();
+				if (DEBUG)
+					uc.println(uc.getInfo().getID() + " " + round + " Before special mechanics " + uc.getEnergyLeft());
+				ExecuteSpecialMechanics(true);
+				if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " before pick target " + uc.getEnergyLeft());
+				PickTargetToMove();
+				if (DEBUG) uc.println(uc.getInfo().getID() + " " + round + " before move " + uc.getEnergyLeft());
+				Move();
+				if (DEBUG)
+					uc.println(uc.getInfo().getID() + " " + round + " before special mechanics 2 " + uc.getEnergyLeft());
+				ExecuteSpecialMechanics(false);
+				if (DEBUG)
+					uc.println(uc.getInfo().getID() + " " + round + " before send messages " + uc.getEnergyLeft());
+				SendMessages();
+				if (uc.getRound() == round && uc.getEnergyLeft() > 20)
+					uc.yield(); // Don't yield if we used too much bytecode.
+			} catch (Exception e) {
+        		uc.println("EXCEPTION!!!: " + e.toString());
+        		uc.yield();
+			}
         }
     }
 }

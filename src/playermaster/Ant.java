@@ -155,15 +155,9 @@ public class Ant extends Attacker {
     }
 
     @Override
-    protected void Attack() {
-        AttackEnemy();
-        AttackRock();
-    }
-
-    @Override
-    protected void ExecuteSpecialMechanics() {
+    protected void ExecuteSpecialMechanics(boolean firstTime) {
 		Mine();
-		super.ExecuteSpecialMechanics();
+		super.ExecuteSpecialMechanics(firstTime);
     }
 
     @Override
@@ -186,5 +180,6 @@ public class Ant extends Attacker {
     protected void Move() {
 		if (!uc.canMove()) return;
         travel.TravelTo(target, obstacles, false);
+        myLoc = uc.getLocation();
     }
 }

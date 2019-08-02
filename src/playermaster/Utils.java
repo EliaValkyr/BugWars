@@ -32,4 +32,17 @@ public class Utils {
     static Location DecodeLocation(int bitmap) {
         return new Location((bitmap & 0xFFFF0000) >> 16, bitmap & 0x0000FFFF);
     }
+
+    static Direction[] GetDirectionsOrderedByClosest(Direction mainDirection) {
+		return new Direction[]{
+				mainDirection,
+				mainDirection.rotateLeft(),
+				mainDirection.rotateRight(),
+				mainDirection.rotateLeft().rotateLeft(),
+				mainDirection.rotateRight().rotateRight(),
+				mainDirection.opposite().rotateRight(),
+				mainDirection.opposite().rotateLeft(),
+				mainDirection.opposite()
+		};
+	}
 }

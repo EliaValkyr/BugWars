@@ -44,7 +44,7 @@ public class Queen extends Unit{
     @Override
     protected void InitTurn() {
         super.InitTurn();
-        if (leader && round % 10 == 0) uc.println("Round " + round);
+//        if (leader && round % 10 == 0) uc.println("Round " + round);
     }
 
     @Override

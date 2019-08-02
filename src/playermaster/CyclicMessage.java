@@ -9,7 +9,6 @@ public class CyclicMessage {
     final int value;
 
     /**Bits position in bitmap:
-     *
      * - Bits 0-11: Encoded value
      * - Bits 12-20: y position (with respect to yBase)
      * - Bits 21-28: x position (with respect to xBase)
@@ -35,7 +34,6 @@ public class CyclicMessage {
         this.x = ((bitmap & iOffMask) >> iOffShift) - 127 + xBase;
         this.y = ((bitmap & jOffMask) >> jOffShift) - 127 + yBase;
         this.value = (bitmap & valueMask);
-
     }
 
     public int Encode(int xBase, int yBase) {

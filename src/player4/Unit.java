@@ -47,9 +47,17 @@ public abstract class Unit {
         enemyUnits = uc.senseUnits(enemyTeam);
         cookies = uc.senseFood();
 		obstacles = uc.senseObstacles();
-		inCombat = enemyUnits.length > 0;
         myLoc = uc.getLocation();
         readFoodLocations = new TreeSet<>();
+
+        inCombat = false;
+        for (UnitInfo enemy : enemyUnits) {
+        	if (!uc.isObstructed(myLoc, enemy.getLocation())) {
+				inCombat = true;
+				break;
+			}
+
+		}
     }
 
     protected abstract void ReadMessages();

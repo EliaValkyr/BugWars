@@ -57,7 +57,7 @@ public class Communication {
     private void SendCyclicMessage(int baseChannel, int senderType, int x, int y, int value) {
             if (xBase == Integer.MAX_VALUE) uc.println("ERROR: Tried to send message without first setting the base");
             int lastMessage = uc.read(baseChannel + CYCLIC_CHANNEL_LENGTH);
-            CyclicMessage message = new CyclicMessage(senderType, x, y , value);
+            CyclicMessage message = new CyclicMessage(senderType, x, y, value);
             int bitmap = message.Encode(xBase, yBase);
             uc.write(baseChannel + lastMessage, bitmap);
             uc.write(baseChannel + CYCLIC_CHANNEL_LENGTH, (lastMessage + 1) % CYCLIC_CHANNEL_LENGTH);

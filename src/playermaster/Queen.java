@@ -10,16 +10,15 @@ public class Queen extends Unit{
             UnitType.ANT,
             UnitType.BEETLE,
             UnitType.ANT,
-            UnitType.BEETLE,
-            UnitType.ANT,
+            UnitType.BEETLE
     };
     int cyclicQueueIndex = 0;
     UnitType[] cyclicQueue = new UnitType[] {
             UnitType.BEETLE,
+            UnitType.BEE,
             UnitType.BEETLE,
-            UnitType.BEETLE,
-            UnitType.BEETLE,
-            UnitType.ANT,
+			UnitType.ANT,
+            UnitType.BEE,
     };
 
     @Override
@@ -44,7 +43,7 @@ public class Queen extends Unit{
     @Override
     protected void InitTurn() {
         super.InitTurn();
-        if (leader && round % 10 == 0) uc.println("Round " + round);
+        if (leader && round % 100 == 0) uc.println("Round " + round);
     }
 
     @Override
@@ -52,16 +51,62 @@ public class Queen extends Unit{
 
     }
 
+	// Value of healing an allyunit of the given type
+	private int GetAllyUnitTypeHealValue(UnitType type) {
+		if (type == UnitType.BEETLE) return 4;
+		if (type == UnitType.ANT) return 3;
+		if (type == UnitType.BEE) return 2;
+		if (type == UnitType.SPIDER) return 5;
+		return 0;
+	}
+
+	private UnitInfo CompareTargetsToHeal(UnitInfo u1, UnitInfo u2) {
+		if (u1 == null) return u2;
+		if (u2 == null) return u1;
+
+		// Compare by type.
+		int u1TypeValue = GetAllyUnitTypeHealValue(u1.getType());
+		int u2TypeValue = GetAllyUnitTypeHealValue(u2.getType());
+		if (u1TypeValue != u2TypeValue)
+			return u1TypeValue > u2TypeValue ? u1 : u2;
+
+		// Lowest health
+		int u1Health = u1.getHealth();
+		int u2Health = u2.getHealth();
+		if (u1Health != u2Health)
+			return u1Health < u2Health ? u1 : u2;
+
+		// Unit furthest away
+		int u1Distance = myLoc.distanceSquared(u1.getLocation());
+		int u2Distance = myLoc.distanceSquared(u2.getLocation());
+		if (u1Distance != u2Distance)
+			return u1Distance > u2Distance ? u1 : u2;
+
+		return u1;
+	}
+
     private void Heal() {
         if (!uc.canHeal()) return;
-        for (UnitInfo ally: myUnits) {
-            if (myLoc.distanceSquared(ally.getLocation()) > GameConstants.QUEEN_HEALING_RANGE) return;
-            if (ally.getHealth() < ally.getType().getMaxHealth() && uc.canHeal(ally)) {
-                uc.heal(ally);
-                return;
-            }
-        }
+
+		UnitInfo bestUnit = null;
+		for (UnitInfo unitInfo : myUnits) {
+			if (!uc.canHeal(unitInfo)) break;
+			bestUnit = CompareTargetsToHeal(bestUnit, unitInfo);
+		}
+		if (bestUnit != null) {
+			uc.heal(bestUnit);
+		}
     }
+
+    private boolean TrySpawnDirection(UnitType type, Direction direction, boolean inInitQueue) {
+		if (uc.canSpawn(direction, type)) {
+			uc.spawn(direction, type);
+			if (inInitQueue) initQueueIndex++;
+			else cyclicQueueIndex = (cyclicQueueIndex + 1) % cyclicQueue.length;
+			return true;
+		}
+		return false;
+	}
 
     private void Spawn() {
         if (uc.hasSpawned()) return;
@@ -74,19 +119,22 @@ public class Queen extends Unit{
         else {
             unitToSpawn = cyclicQueue[cyclicQueueIndex];
         }
-        for(Direction dir : Direction.values()) {
-            if (uc.canSpawn(dir, unitToSpawn)) {
-                uc.spawn(dir, unitToSpawn);
-                if (inInitQueue) initQueueIndex++;
-                else cyclicQueueIndex = (cyclicQueueIndex + 1) % cyclicQueue.length;
-            }
-        }
+
+        if (uc.getResources() < unitToSpawn.cost) return;
+
+		Direction mainDir = target == null ? myLoc.directionTo(uc.getEnemyQueensLocation()[0]) : myLoc.directionTo(target);
+		Direction[] dirs = Utils.GetDirectionsOrderedByClosest(mainDir);
+		for (int i = 1; i < dirs.length; ++i) {
+			TrySpawnDirection(unitToSpawn, dirs[i], inInitQueue);
+		}
+		// We don't want to spawn right at the target direction, so we check it at the end.
+		TrySpawnDirection(unitToSpawn, dirs[0], inInitQueue);
     }
 
     @Override
-    protected void ExecuteSpecialMechanics(){
+    protected void ExecuteSpecialMechanics(boolean firstTime){
         Heal();
-        Spawn();
+        if (!firstTime) Spawn(); // This hopefully spawns units 1 closer to the target.
     }
 
     @Override
@@ -106,6 +154,7 @@ public class Queen extends Unit{
 		else {
 			travel.TravelTo(target, obstacles);
 		}
+		myLoc = uc.getLocation();
     }
 
 

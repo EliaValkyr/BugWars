@@ -158,32 +158,29 @@ public class Travel {
 	// Returns the directions ordered from best to worst, depending on the current surrounding state.
 	private Direction[] GetOrderedDirections(int surroundingState, Direction bestDir) {
 		if (surroundingState == FREE) {
+			return Utils.GetDirectionsOrderedByClosest(bestDir);
+		} else if (surroundingState == CLOCKWISE) {
+			return new Direction[]{
+					bestDir,
+					bestDir.rotateRight(),
+					bestDir.rotateRight().rotateRight(),
+					bestDir.opposite().rotateLeft(),
+					bestDir.opposite(),
+					bestDir.opposite().rotateRight(),
+					bestDir.rotateLeft().rotateLeft(),
+					bestDir.rotateLeft(),
+			};
+		} else {
 			return new Direction[]{
 					bestDir,
 					bestDir.rotateLeft(),
-					bestDir.rotateRight(),
 					bestDir.rotateLeft().rotateLeft(),
-					bestDir.rotateRight().rotateRight(),
 					bestDir.opposite().rotateRight(),
+					bestDir.opposite(),
 					bestDir.opposite().rotateLeft(),
-					bestDir.opposite()
+					bestDir.rotateRight().rotateRight(),
+					bestDir.rotateRight(),
 			};
-		} else if (surroundingState == CLOCKWISE) {
-			Direction dir = bestDir;
-			Direction[] ret = new Direction[8];
-			for (int i = 0; i < 8; i++) {
-				ret[i] = dir;
-				dir = dir.rotateRight();
-			}
-			return ret;
-		} else {
-			Direction dir = bestDir;
-			Direction[] ret = new Direction[8];
-			for (int i = 0; i < 8; i++) {
-				ret[i] = dir;
-				dir = dir.rotateLeft();
-			}
-			return ret;
 		}
 	}
 

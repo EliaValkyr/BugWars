@@ -64,7 +64,6 @@ public abstract class Attacker extends Unit {
 
     protected void AttackRock() {
         if (!uc.canAttack()) return;
-        if (enemyUnits.length > 0) return;
         if (inCombat) return;
         int minRockHP = Integer.MAX_VALUE;
         Location minRockLoc = null;

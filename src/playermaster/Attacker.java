@@ -17,7 +17,7 @@ public abstract class Attacker extends Unit {
     // Value of attacking a unit of the given type
     private int GetEnemyUnitTypeAttackValue(UnitType type) {
     	if (type == UnitType.BEETLE) return 3;
-    	if (type == UnitType.ANT) return 1;
+    	if (type == UnitType.ANT) return 2;
     	if (type == UnitType.BEE) return 4;
     	if (type == UnitType.SPIDER) return 5;
     	if (type == UnitType.QUEEN) return 1;
@@ -55,16 +55,31 @@ public abstract class Attacker extends Unit {
         for (UnitInfo unitInfo : enemyUnits) {
 			if (uc.canAttack(unitInfo)) {
 				bestUnit = CompareEnemyTargets(bestUnit, unitInfo);
-			}
+			} else if (myLoc.distanceSquared(unitInfo.getLocation()) > uc.getType().attackRangeSquared)
+				break;
         }
         if (bestUnit != null) {
             uc.attack(bestUnit.getLocation());
         }
     }
 
+    boolean AttackRockTowardsTarget() {
+    	if (target == null) return false;
+    	if (myLoc.distanceSquared(target) > 100) return false;
+    	Direction dirToTarget = myLoc.directionTo(target);
+		Location rockLocation = myLoc.add(dirToTarget);
+		RockInfo ri = uc.senseObstacle(rockLocation);
+		if (ri != null && ri.getDurability() > 0 && uc.canAttack(ri)) {
+			uc.attack(ri);
+			return true;
+		}
+    	return false;
+	}
+
     protected void AttackRock() {
         if (!uc.canAttack()) return;
         if (inCombat) return;
+        if (AttackRockTowardsTarget()) return;
         int minRockHP = Integer.MAX_VALUE;
         Location minRockLoc = null;
         for (RockInfo rockInfo : obstacles) {
@@ -80,12 +95,18 @@ public abstract class Attacker extends Unit {
         }
     }
 
-    protected abstract void Attack();
+	protected void Attack() {
+		AttackEnemy();
+		AttackRock();
+	}
 
-    protected void ExecuteSpecialMechanics() {
+    protected void ExecuteSpecialMechanics(boolean firstTime) {
         Attack();
     }
 
+	@Override
+    protected void ReadMessages() {
 
+	}
 
 }
